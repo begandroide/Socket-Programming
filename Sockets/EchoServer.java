@@ -13,21 +13,19 @@ public class EchoServer {
         int portNumber = Integer.parseInt(args[0]);
         
         try (
-            ServerSocket serverSocket =
-                new ServerSocket(Integer.parseInt(args[0]));
-            Socket clientSocket = serverSocket.accept();     
-            PrintWriter out =
-                new PrintWriter(clientSocket.getOutputStream(), true);                   
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream()));
+            //socket del servidor en el puerto arg
+            ServerSocket serverSocket = new ServerSocket(portNumber);
+            //socket de un cliente
+            Socket clientSocket = serverSocket.accept();
+            //writer out del servidor al cliente
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);                   
+            //buffer que guarda lo que viene desde cliente
+            BufferedReader in = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()));
         ) {
             String inputLine;
+            //por cada linea que ingrese el cliente
             while ((inputLine = in.readLine()) != null) {
                 System.out.println(inputLine);
-                if(inputLine == "Hola"){
-                    
-                    inputLine.replace('o', 'a');
-                }
                 out.println(inputLine);
             }
         } catch (IOException e) {

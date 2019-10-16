@@ -15,16 +15,13 @@ public class EchoClient {
         int portNumber = Integer.parseInt(args[1]);
 
         try (
+            //socket del cliente, conectado al server en el puerto arg
             Socket echoSocket = new Socket(hostName, portNumber);
-            PrintWriter out =
-                new PrintWriter(echoSocket.getOutputStream(), true);
-            BufferedReader in =
-                new BufferedReader(
-                    new InputStreamReader(echoSocket.getInputStream()));
-            BufferedReader stdIn =
-                new BufferedReader(
-                    new InputStreamReader(System.in))
-        ) {
+            
+            PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader( new InputStreamReader(echoSocket.getInputStream()));
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
+            ) {
             String userInput;
             while ((userInput = stdIn.readLine()) != null) {
                 out.println(userInput);

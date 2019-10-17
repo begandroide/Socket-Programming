@@ -26,21 +26,32 @@ public class KnockKnockClient {
             String fromUser;
             String fromServer = "";
 
-            byte[] messageByte = new byte[10000];
+            byte[] messageByte = new byte[1000];
 
-            while (in.available()>0) {
-                int bytesRead = in.read(messageByte);
-                fromServer += new String(messageByte, 0, bytesRead);
-                
-                System.out.println(fromServer);
-                fromServer = "";
-                
-                fromUser = stdIn.readLine();
-                if (fromUser != null) {
-                    // enviamos al server peticion del usuario
-                    out.println(fromUser);
-                }
+            Boolean brokePipe = false;
+            while(!brokePipe){
+
+                    while (in.available() > 0) {
+                        System.out.println("Nuevo mensaje disponible");
+                        int bytesRead = in.read(messageByte);
+                        fromServer += new String(messageByte, 0, bytesRead);
+                        System.out.println(fromServer);
+                        fromServer = "";
+                        
+                        fromUser = stdIn.readLine();
+                        if(fromUser.equals( "5")){
+                                brokePipe = true;
+                                break;
+                        } 
+                        if (fromUser != null) {
+                                System.out.println("Se ha enviado petición: "+ fromUser + " al servidor");
+                                // enviamos al server peticion del usuario
+                                out.println(fromUser);
+                                out.flush();
+                        }
+                    }
             }
+            System.out.println("Chao compare!");
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);

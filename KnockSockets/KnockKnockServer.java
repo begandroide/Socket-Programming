@@ -28,15 +28,17 @@ public class KnockKnockServer {
             KnockKnockProtocol kkp = new KnockKnockProtocol();
             outputLine = kkp.processInput(null);
             out.println(outputLine);
-            // out.flush();
+            out.flush();
             outputLine = "";
             
             while ((inputLine = in.readLine()) != null) {
+                System.out.println("Ha llegado: "+ inputLine + " desde el cliente");
                 outputLine = kkp.processInput(inputLine);
-                System.out.println(outputLine);
+                System.out.println("Petición procesada -> :" + outputLine);
                 out.println(outputLine);
-                if (outputLine.equals("Bye ma' friend!"))
-                    break;
+                System.out.println("Respuesta enviada -> :" + outputLine);
+                // if (outputLine.equals("Bye ma' friend!"))
+                //     break;
             }
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "

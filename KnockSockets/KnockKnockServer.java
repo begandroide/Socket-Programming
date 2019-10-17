@@ -6,7 +6,7 @@ public class KnockKnockServer {
     public static void main(String[] args) throws IOException {
         
         if (args.length != 1) {
-            System.err.println("Usage: java EchoServer <port_number>");
+            System.err.println("Usage: java KnockKnockServer <port_number>");
             System.exit(1);
         }
         
@@ -35,7 +35,7 @@ public class KnockKnockServer {
                 outputLine = kkp.processInput(inputLine);
                 System.out.println(outputLine);
                 out.println(outputLine);
-                if (outputLine.equals("Bye."))
+                if (outputLine.equals("Bye ma' friend!"))
                     break;
             }
         } catch (IOException e) {

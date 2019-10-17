@@ -23,21 +23,18 @@ public class KnockKnockClient {
             )
             {
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-            String fromServer;
             String fromUser;
+            String fromServer = "";
 
-            byte[] messageByte = new byte[1000];
-            boolean end = false;
-            String dataString = "";
+            byte[] messageByte = new byte[10000];
 
             while (in.available()>0) {
-                //No muy util ya que no se limpia el buffer
                 int bytesRead = in.read(messageByte);
-                dataString += new String(messageByte, 0, bytesRead);
+                fromServer += new String(messageByte, 0, bytesRead);
                 
-                System.out.println(dataString);
-                // System.out.println(fromServer);
-                dataString = "";
+                System.out.println(fromServer);
+                fromServer = "";
+                
                 fromUser = stdIn.readLine();
                 if (fromUser != null) {
                     // enviamos al server peticion del usuario

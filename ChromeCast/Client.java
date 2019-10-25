@@ -16,6 +16,5 @@ public class Client {
 
         new MulticastClientThread().start(); 
         new CommandClientThread().start();       
-        //TODO: implementar threads para escuchar al server
     }
 }

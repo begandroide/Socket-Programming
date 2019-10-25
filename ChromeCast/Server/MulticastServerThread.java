@@ -1,16 +1,19 @@
 package Server;
 import java.net.*;
-import java.util.Date;
 import java.io.*;
 
-public class MulticastServerThread extends QuoteServerThread {
+public class MulticastServerThread extends Thread {
 
     private long FIVE_SECONDS = 1000;
     private String ipMulticast = "";
+    protected DatagramSocket socket = null;
+    protected BufferedReader in = null;
+    protected Boolean moreQuotes = true;
 
     public MulticastServerThread(String ipMulticast) throws IOException{
         super("MulticastServerThread");
         this.ipMulticast = ipMulticast;
+        socket = new DatagramSocket(4445);
     }
 
     public void run(){
@@ -23,12 +26,8 @@ public class MulticastServerThread extends QuoteServerThread {
                 
                 //resolver y enviar respuesta
                 String dString = null;
-                if(in == null){
-                    dString = new Date().toString();
-                } else{
-                    dString = getNextQuote(i);
-                    i++;
-                }
+                dString = getNextQuote(i);
+                i++;
 
                 buf = dString.getBytes();
 
@@ -51,5 +50,15 @@ public class MulticastServerThread extends QuoteServerThread {
             }
         }
     }
+    
+    protected String getNextQuote(int progress){
+        String anim= "|/-\\";        
+        String data = "\r" + anim.charAt(progress % anim.length()) + " " + progress;
+        // System.out.write(data.getBytes());
+        // String returnValue = String.format("CCast_%s_%d%%","test",progress);
+
+        return data;
+    }
+
 
 }

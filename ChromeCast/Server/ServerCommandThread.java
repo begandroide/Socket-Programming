@@ -43,6 +43,8 @@ public class ServerCommandThread extends Thread {
                     System.out.println("Petición procesada -> :" + outputLine);
                     out.println(outputLine);
                     System.out.println("Respuesta enviada -> :" + outputLine);
+                    outputLine = "";
+                    out.flush();
                 }
             } catch (IOException e) {
                 e.printStackTrace();

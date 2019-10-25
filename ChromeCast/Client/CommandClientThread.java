@@ -33,17 +33,17 @@ public class CommandClientThread extends Thread {
         String fromUser;
         String fromServer = "";
 
-        byte[] messageByte = new byte[1000];
-
         Boolean brokePipe = false;
         while (!brokePipe) {
 
             try {
                 while (in.available() > 0) {
+                
                     System.out.println("Nuevo mensaje disponible");
+                    byte[] messageByte = new byte[500];
                     int bytesRead = in.read(messageByte);
                     fromServer += new String(messageByte, 0, bytesRead);
-                    System.out.write(messageByte);
+                    System.out.println(fromServer);
                     fromServer = "";
 
                     fromUser = stdIn.readLine();
@@ -57,6 +57,7 @@ public class CommandClientThread extends Thread {
                         out.println(fromUser);
                         out.flush();
                     }
+                    fromServer = "";
                 }
             } catch (IOException e) {
                 e.printStackTrace();

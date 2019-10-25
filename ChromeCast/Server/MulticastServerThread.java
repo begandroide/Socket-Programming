@@ -5,7 +5,7 @@ import java.io.*;
 
 public class MulticastServerThread extends QuoteServerThread {
 
-    private long FIVE_SECONDS = 8000;
+    private long FIVE_SECONDS = 1000;
     private String ipMulticast = "";
 
     public MulticastServerThread(String ipMulticast) throws IOException{
@@ -14,7 +14,7 @@ public class MulticastServerThread extends QuoteServerThread {
     }
 
     public void run(){
-        
+        int i = 0;
         while(moreQuotes){
             try {
                 //wait for a request first
@@ -26,7 +26,8 @@ public class MulticastServerThread extends QuoteServerThread {
                 if(in == null){
                     dString = new Date().toString();
                 } else{
-                    dString = getNextQuote();
+                    dString = getNextQuote(i);
+                    i++;
                 }
 
                 buf = dString.getBytes();

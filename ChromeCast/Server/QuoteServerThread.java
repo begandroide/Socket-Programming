@@ -24,6 +24,7 @@ public class QuoteServerThread extends Thread {
     }
 
     public void run(){
+        int i = 0;
         while(moreQuotes){
             try {
                 byte[] buf = new byte[256];
@@ -36,7 +37,8 @@ public class QuoteServerThread extends Thread {
                 if(in == null){
                     dString = new Date().toString();
                 } else{
-                    dString = getNextQuote();
+                    dString = getNextQuote(i);
+                    i++;
                 }
 
                 buf = dString.getBytes();
@@ -55,19 +57,13 @@ public class QuoteServerThread extends Thread {
         }
     }
 
-    protected String getNextQuote(){
-        String returnValue = null;
-        try {
-            if((returnValue = in.readLine()) == null){
-                in.close();
-                moreQuotes = false;
-                returnValue = "No more Quotes, Good Bye";
-            }
-        } catch (IOException e) 
-        {
-            returnValue = "IOException en obtener nueva cita en servidor";
-        }
-        return returnValue;
+    protected String getNextQuote(int progress){
+        String anim= "|/-\\";        
+        String data = "\r" + anim.charAt(progress % anim.length()) + " " + progress;
+        // System.out.write(data.getBytes());
+        // String returnValue = String.format("CCast_%s_%d%%","test",progress);
+
+        return data;
     }
 
 }

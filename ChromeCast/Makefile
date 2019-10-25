@@ -1,8 +1,9 @@
-javac ./*.java
+
+all:
+	mkdir out
+	javac ./Client/*.java -d ./out
+	javac ./Server/*.java -d ./out
 
 clean:
+	rmdir -r out
 	rm ./*.class
-    
-run:
-	java MulticastServer &
-	java MulticastClient localhost

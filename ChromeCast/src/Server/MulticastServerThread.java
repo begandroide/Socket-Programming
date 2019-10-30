@@ -40,7 +40,7 @@ public class MulticastServerThread extends Thread {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length,groupAddress,4446);
                 socket.send(packet); 
                 try {
-                    sleep((long)(Math.random() * FIVE_SECONDS));
+                    sleep((long)(FIVE_SECONDS));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

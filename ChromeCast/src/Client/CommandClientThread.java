@@ -47,7 +47,7 @@ public class CommandClientThread extends Thread {
                     fromServer = "";
 
                     fromUser = stdIn.readLine();
-                    if (fromUser.equals("5")) {
+                    if (fromUser.equals("6")) {
                         brokePipe = true;
                         break;
                     }

@@ -1,9 +1,8 @@
 package Server;
 
-import java.net.*;
-
 import Protocol.KnockKnockProtocol;
 
+import java.net.*;
 import java.io.*;
 
 public class ServerCommandThread extends Thread {

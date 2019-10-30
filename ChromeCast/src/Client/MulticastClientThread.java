@@ -43,7 +43,7 @@ public class MulticastClientThread extends Thread {
                 multiSocket.close();
             }
             String received = new String(packet.getData(),0,packet.getLength());
-            System.out.print( received + "% >> ");
+            System.out.print( received );
         }
     }
 }

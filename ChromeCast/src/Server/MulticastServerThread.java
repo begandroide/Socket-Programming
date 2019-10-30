@@ -4,60 +4,97 @@ import java.io.*;
 
 public class MulticastServerThread extends Thread {
 
-    private long FIVE_SECONDS = 1000;
+    private long ONE_SECONDS = 1000;
     private String ipMulticast = "";
     protected DatagramSocket socket = null;
     protected BufferedReader in = null;
     protected Boolean moreQuotes = true;
 
-    public MulticastServerThread(String ipMulticast) throws IOException{
+    private ServerStatus state = null;
+    private int progress = 0;
+
+    private ServerCommandThread sCommandThread;
+
+    public MulticastServerThread(String ipMulticast, ServerCommandThread sCommandThread) throws IOException{
         super("MulticastServerThread");
         this.ipMulticast = ipMulticast;
         socket = new DatagramSocket(4445);
+        state =  ServerStatus.STOP;
+        this.sCommandThread = sCommandThread;
     }
 
-    public void run(){
-        int i = 0;
+	public void run(){
+        String lastCommand = "";
         while(moreQuotes){
             try {
                 //wait for a request first
-                
+                if( (lastCommand = sCommandThread.getMessage()) != ""){
+                    processMessage(lastCommand);
+                }
                 byte[] buf = new byte[256];
                 
                 //resolver y enviar respuesta
                 String dString = null;
-                dString = getNextQuote(i);
-                i++;
+                dString = getNextQuote();
 
                 buf = dString.getBytes();
 
                 //debemos enviar la respuesta a los cliente
-                // se debe saber dirección del cliente y puerto desde donde llegó 
-                // la request
-                // InetAddress groupAddress = InetAddress.getByName("230.0.0.1");
+                // se debe saber dirección del cliente y puerto desde donde llegó la request
                 InetAddress groupAddress = InetAddress.getByName(ipMulticast);
                 
                 DatagramPacket packet = new DatagramPacket(buf, buf.length,groupAddress,4446);
                 socket.send(packet); 
                 try {
-                    sleep((long)(FIVE_SECONDS));
+                    sleep((long)(ONE_SECONDS));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 moreQuotes = false;
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
         }
     }
     
-    protected String getNextQuote(int progress){
-        String anim= "|/-\\";        
-        String data = "\r" + anim.charAt(progress % anim.length()) + " " + progress;
-        // System.out.write(data.getBytes());
-        // String returnValue = String.format("CCast_%s_%d%%","test",progress);
+    protected String getNextQuote(){
+        String anim = "|/-\\";   
+        String data = "";     
+        switch (state) {
+            case STOP:
+                data = "\r" + anim.charAt((int)Math.random() % anim.length()) + " CCast STOPED";
+                break;
+            case PLAY:
+                data = "\r" + anim.charAt(progress % anim.length()) + " " + progress + "%% >> ";
+                progress++;
+                break;
+            case PAUSE:
+                data = "\r" + anim.charAt((int)Math.random() % anim.length()) + " CCast PAUSED";
+                break;
+            default:
+                break;
+        }
 
         return data;
+    }
+
+    protected void processMessage(String inMString){
+        switch (inMString) {
+            case "0":
+                state = ServerStatus.PLAY;
+                break;
+            case "1":
+                state = ServerStatus.STOP;
+                break;
+            case "2":
+                state = ServerStatus.PAUSE;            
+                break;
+            default:
+                break;
+        }
     }
 
 

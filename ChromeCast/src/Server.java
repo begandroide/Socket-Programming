@@ -10,7 +10,8 @@ public class Server {
             System.exit(1);
         }
 
-        new MulticastServerThread(args[0]).start(); 
-        new ServerCommandThread().start();       
+        ServerCommandThread sct =  new ServerCommandThread();       
+        sct.start();
+        new MulticastServerThread(args[0],sct).start(); 
     }
 }

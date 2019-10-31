@@ -7,27 +7,24 @@ import java.util.Vector;
 import java.io.*;
 
 public class ServerCommandThread extends Thread {
-
+    private Socket socket = null;
     private boolean moreQuotes = true;
     public final int MAX_QUEUE = 7;
     public Vector<String> Queue = new Vector<String>();
 
-    public ServerCommandThread() throws IOException{
+    public ServerCommandThread(Socket socket) throws IOException{
         super("ServerCommandThread");
+        this.socket = socket;
     }
 
     public void run(){
         while(moreQuotes){
             try 
             (
-                //socket del servidor en el puerto arg
-                ServerSocket serverSocket = new ServerSocket(4445);
-                //socket de un cliente
-                Socket clientSocket = serverSocket.accept();
                 //writer out del servidor al cliente
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);                   
+                PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);                   
                 //buffer que guarda lo que viene desde cliente
-                BufferedReader in = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()));
+                BufferedReader in = new BufferedReader( new InputStreamReader(this.socket.getInputStream()));
             ) 
             {
                 String inputLine, outputLine;
@@ -43,9 +40,9 @@ public class ServerCommandThread extends Thread {
                     System.out.println("Ha llegado: "+ inputLine + " desde el cliente");
                     outputLine = kkp.processInput(inputLine);
                     putMessage(inputLine);
-                    System.out.println("Petición procesada -> :" + outputLine);
+                    // System.out.println("Petición procesada -> :" + outputLine);
                     out.println(outputLine);
-                    System.out.println("Respuesta enviada -> :" + outputLine);
+                    // System.out.println("Respuesta enviada -> :" + outputLine);
                     outputLine = "";
                     out.flush();
                 }

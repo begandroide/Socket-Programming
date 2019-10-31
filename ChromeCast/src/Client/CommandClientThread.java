@@ -8,14 +8,12 @@ public class CommandClientThread extends Thread {
     protected DataInputStream in = null;
     protected PrintWriter out = null;
     protected String hostName = "localhost";
-    protected int portNumber = 4445; /// para escuchar comandos
+    protected int portNumber = 0; /// para escuchar comandos
 
-    public CommandClientThread() throws IOException {
-        this("CommandClientThread");
-    }
-
-    public CommandClientThread(String name) throws IOException {
-        super(name);
+    
+    public CommandClientThread(String port) throws IOException {
+        super("CommandClientThread");
+        this.portNumber = Integer.parseInt(port);
 
         try {
             // socket del cliente, conectado al server en el puerto arg

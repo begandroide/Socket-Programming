@@ -28,6 +28,7 @@ public class MulticastServerThread extends Thread {
         while(moreQuotes){
             try {
                 //wait for a request first
+                //ERROR: funciona solo para un thread
                 if( (lastCommand = sCommandThread.getMessage()) != ""){
                     processMessage(lastCommand);
                 }

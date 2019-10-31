@@ -20,7 +20,7 @@ public class MulticastClientThread extends Thread {
             address = InetAddress.getByName("230.0.0.1");
             multiSocket.joinGroup(address);
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println("Error en constructor del thread");
         }
     }
 

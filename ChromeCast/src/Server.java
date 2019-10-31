@@ -1,6 +1,7 @@
 
 import java.io.*;
 import java.net.ServerSocket;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import Server.*;
 
@@ -17,11 +18,12 @@ public class Server {
             ServerSocket serverSocket = new ServerSocket(4444);
             )
             {
-                ServerCommandThread sct = new ServerCommandThread(serverSocket.accept());
+                ArrayBlockingQueue<String> bqueue = new ArrayBlockingQueue<String>(7,true); 
+                ServerCommandThread sct = new ServerCommandThread(serverSocket.accept(),bqueue);
                 sct.start();
-                new MulticastServerThread("230.0.0.1",sct).start(); 
+                new MulticastServerThread("230.0.0.1",bqueue).start(); 
                 while (true) {
-                    sct =  new ServerCommandThread(serverSocket.accept());       
+                    sct =  new ServerCommandThread(serverSocket.accept(), bqueue);       
                     sct.start();
             }
         } catch (IOException e) {

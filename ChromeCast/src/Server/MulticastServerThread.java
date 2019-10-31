@@ -1,5 +1,6 @@
 package Server;
 import java.net.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.io.*;
 
 public class MulticastServerThread extends Thread {
@@ -13,14 +14,14 @@ public class MulticastServerThread extends Thread {
     private ServerStatus state = null;
     private int progress = 0;
 
-    private ServerCommandThread sCommandThread;
+    private ArrayBlockingQueue<String> aQueue;
 
-    public MulticastServerThread(String ipMulticast, ServerCommandThread sCommandThread) throws IOException{
+    public MulticastServerThread(String ipMulticast, ArrayBlockingQueue<String> aQueue) throws IOException{
         super("MulticastServerThread");
         this.ipMulticast = ipMulticast;
         socket = new DatagramSocket(4445);
         state =  ServerStatus.STOP;
-        this.sCommandThread = sCommandThread;
+        this.aQueue = aQueue;
     }
 
 	public void run(){
@@ -29,7 +30,9 @@ public class MulticastServerThread extends Thread {
             try {
                 //wait for a request first
                 //ERROR: funciona solo para un thread
-                if( (lastCommand = sCommandThread.getMessage()) != ""){
+                if( aQueue.size() > 0 )
+                {
+                    lastCommand = aQueue.take(); 
                     processMessage(lastCommand);
                 }
                 byte[] buf = new byte[256];

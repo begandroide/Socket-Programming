@@ -8,9 +8,11 @@ public class MulticastClientThread extends Thread {
     protected DatagramPacket packet = null;
     protected MulticastSocket multiSocket = null;
     protected InetAddress address = null;
+    public int clientID = 0;
 
-    public MulticastClientThread() throws IOException {
+    public MulticastClientThread(int clientID) throws IOException {
         this("MulticastClientThread");
+        this.clientID = clientID;
     }
 
     public MulticastClientThread(String name) throws IOException {
@@ -43,7 +45,7 @@ public class MulticastClientThread extends Thread {
                 multiSocket.close();
             }
             String received = new String(packet.getData(),0,packet.getLength());
-            System.out.print( received );
+            System.out.print( received + " >>Client"+this.clientID+"-> ");
         }
     }
 }

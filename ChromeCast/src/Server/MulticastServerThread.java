@@ -64,17 +64,17 @@ public class MulticastServerThread extends Thread {
     
     protected String getNextQuote(){
         String anim = "|/-\\";   
-        String data = "";     
+        String data = "\r>>CCast_";     
         switch (state) {
             case STOP:
-                data = "\r" + anim.charAt((int)Math.random() % anim.length()) + " CCast STOPED";
+                data += "Stop";
                 break;
             case PLAY:
-                data = "\r" + anim.charAt(progress % anim.length()) + " " + progress + "%% >> ";
+                data += anim.charAt(progress % anim.length()) + " " + progress + "% >> ";
                 progress++;
                 break;
             case PAUSE:
-                data = "\r" + anim.charAt((int)Math.random() % anim.length()) + " CCast PAUSED";
+                data += "PAUSED _ (Pausa para reanudar)";
                 break;
             default:
                 break;

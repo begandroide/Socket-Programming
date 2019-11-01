@@ -9,7 +9,7 @@ public class CommandClientThread extends Thread {
     protected DatagramSocket kkSocket = null;
     protected String hostName = "230.0.0.1";
     protected int portNumber = 0; /// para escuchar comandos
-
+    public int clientID = 0;
     
     public CommandClientThread(String port) throws IOException {
         super("CommandClientThread");
@@ -28,7 +28,20 @@ public class CommandClientThread extends Thread {
             
             KnockKnockProtocol kkp = new KnockKnockProtocol();
             //mensaje de bienvenida
-            System.out.println("Bienvenido a ChromeCast cliente: " + Thread.activeCount());
+
+            messageByte =  "HelloChromeCast".getBytes();
+            InetAddress groupAddress = InetAddress.getByName(hostName);
+    
+            DatagramPacket packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+            kkSocket.send(packet); 
+
+            //esperar id de cliente de servidor
+            kkSocket.receive(packet);
+
+            String received = new String(packet.getData(),0,packet.getLength());
+
+            this.clientID = Integer.parseInt(received);
+            System.out.println("Bienvenido a ChromeCast cliente: " + this.clientID);
             System.out.println( kkp.processInput(null) );
             Boolean brokePipe = false;
             while(!brokePipe){
@@ -36,10 +49,9 @@ public class CommandClientThread extends Thread {
 
                 if (fromUser != null) {
                     messageByte =  fromUser.getBytes();
-                    InetAddress groupAddress = InetAddress.getByName(hostName);
             
-                    DatagramPacket packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
-                    kkSocket.send(packet); 
+                    packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+                    kkSocket.send(packet);
 
                     System.out.println("Se ha enviado petición: "+ fromUser + " al servidor");
                 }

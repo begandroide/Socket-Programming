@@ -28,8 +28,6 @@ public class MulticastServerThread extends Thread {
         String lastCommand = "";
         while(moreQuotes){
             try {
-                //wait for a request first
-                //ERROR: funciona solo para un thread
                 if( aQueue.size() > 0 )
                 {
                     lastCommand = aQueue.take(); 

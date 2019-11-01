@@ -13,19 +13,16 @@ public class Server {
         //     System.exit(1);
         // }
 
-        try (
-            //socket del servidor en el puerto arg
-            ServerSocket serverSocket = new ServerSocket(4444);
-            )
+        try 
             {
                 ArrayBlockingQueue<String> bqueue = new ArrayBlockingQueue<String>(7,true); 
-                ServerCommandThread sct = new ServerCommandThread(serverSocket.accept(),bqueue);
+                ServerCommandThread sct = new ServerCommandThread(bqueue);
                 sct.start();
                 new MulticastServerThread("230.0.0.1",bqueue).start(); 
-                while (true) {
-                    sct =  new ServerCommandThread(serverSocket.accept(), bqueue);       
-                    sct.start();
-            }
+                // while (true) {
+                    // sct =  new ServerCommandThread( bqueue);       
+                    // sct.start();
+            // }
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
                 + " or listening for a connection");

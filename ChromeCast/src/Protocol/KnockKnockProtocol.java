@@ -57,13 +57,16 @@ public class KnockKnockProtocol {
     private String getCommandsAvailable(){
         String outString = "";
         outString = ANSI_YELLOW + "Comandos disponibles:" + ANSI_RESET + "\n";
-        outString +=  ANSI_PURPLE+"[0]"+ANSI_RESET+" Play\n"
-                    + ANSI_PURPLE+"[1]"+ANSI_RESET+" Stop\n"
-                    + ANSI_PURPLE+"[2]"+ANSI_RESET+" Pause\n"
-                    + ANSI_PURPLE+"[3]"+ANSI_RESET+" Queue\n"
-                    + ANSI_PURPLE+"[4]"+ANSI_RESET+" Next\n"
-                    + ANSI_PURPLE+"[5]"+ANSI_RESET+" Jump\n"
-                    + ANSI_PURPLE+"[6]"+ANSI_RESET+" Exit...\n";
+        outString +=  ANSI_PURPLE+"[0]"+ANSI_RESET+" Play  ----> uso: Client<id>: Play_Foyone - Presidente_120\n"
+                    + ANSI_PURPLE+"[1]"+ANSI_RESET+" Stop  ----> uso: Client<id>: Stop\n"
+                    + ANSI_PURPLE+"[2]"+ANSI_RESET+" Pause ----> uso: Client<id>: Pause\n"
+                    + ANSI_PURPLE+"[3]"+ANSI_RESET+" Queue ----> uso: (1) Client<id>: Queue -> consulta la cola\n"
+                    + ANSI_PURPLE+"   "+ANSI_RESET+"                  (2) Client<id>: Queue(<cancion>) -> añade canción a la cola\n"
+                    + ANSI_PURPLE+"[4]"+ANSI_RESET+" Next  ----> uso: Next\n"
+                    + ANSI_PURPLE+"[5]"+ANSI_RESET+" Jump  ----> uso: Jump\n"
+                    + ANSI_PURPLE+"[6]"+ANSI_RESET+" Commands -> Mostrar historial de comandos\n"
+                    + ANSI_PURPLE+"[7]"+ANSI_RESET+" Help: Mostrar historial de comandos\n"
+                    + ANSI_PURPLE+"[8]"+ANSI_RESET+" Exit...\n";
         return outString;
     }
 }

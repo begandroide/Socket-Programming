@@ -2,6 +2,8 @@ package Client;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import Protocol.KnockKnockProtocol;
 
@@ -10,12 +12,14 @@ public class CommandClientThread extends Thread {
     protected String hostName = "230.0.0.1";
     protected int portNumber = 0; /// para escuchar comandos
     public int clientID = 0;
+    protected List<String> historyCommands = null;
     
     public CommandClientThread(String port) throws IOException {
         super("CommandClientThread");
         this.portNumber = Integer.parseInt(port);
         // socket del cliente, conectado al server en el puerto arg
         kkSocket = new DatagramSocket(this.portNumber);
+        this.historyCommands = new ArrayList<String>();
     }
 
     public void run() {
@@ -42,12 +46,16 @@ public class CommandClientThread extends Thread {
 
             this.clientID = Integer.parseInt(received);
             System.out.println("Bienvenido a ChromeCast cliente: " + this.clientID);
+
             System.out.println( kkp.processInput(null) );
             Boolean brokePipe = false;
             while(!brokePipe){
                 fromUser = stdIn.readLine();
 
                 if (fromUser != null) {
+                    String command = "Client"+ String.valueOf( this.clientID ) + fromUser;
+                    this.historyCommands.add(command);
+                    
                     messageByte =  fromUser.getBytes();
             
                     packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);

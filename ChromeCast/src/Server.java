@@ -16,8 +16,10 @@ public class Server {
         try 
             {
                 ArrayBlockingQueue<String> bqueue = new ArrayBlockingQueue<String>(7,true); 
-                new MulticastServerThread("230.0.0.1",bqueue).start(); 
-                new ServerCommandThread(bqueue,activeClients).start();
+                ArrayBlockingQueue<String> reproductionQueue = new ArrayBlockingQueue<String>(20,true); 
+                reproductionQueue.add("Foyone-Presidente");
+                new MulticastServerThread("230.0.0.1",bqueue,reproductionQueue).start(); 
+                new ServerCommandThread(bqueue,activeClients,reproductionQueue).start();
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
                 + " or listening for a connection");

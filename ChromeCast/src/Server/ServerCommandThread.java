@@ -10,12 +10,14 @@ public class ServerCommandThread extends Thread {
     public final int MAX_QUEUE = 7;
     public Vector<String> Queue = new Vector<String>();
     private ArrayBlockingQueue<String> bQueue;
+    private ArrayBlockingQueue<String> reproductionQueue;
     private int activeClients = 0;
 
-    public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients) throws IOException {
+    public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients, ArrayBlockingQueue<String> reproductionQueue) throws IOException {
         super("ServerCommandThread");
         this.bQueue = bqueue;
         this.activeClients = activeClients;
+        this.reproductionQueue = reproductionQueue;
     }
 
     public void run() {
@@ -41,6 +43,18 @@ public class ServerCommandThread extends Thread {
                     System.out.println("Nuevo cliente");
                     activeClients++;
                     byte[] activeNow = String.valueOf( activeClients ).getBytes();
+                    packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
+                    multiSocket.send(packet); 
+                }
+                if(received.compareTo("Queue") == 0){
+                    System.out.println("Consulta cola");
+                    byte[] activeNow = this.reproductionQueue.toString().getBytes();
+                    packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
+                    multiSocket.send(packet); 
+                }
+                if(received.contains("Queue(")){
+                    System.out.println("Añade cola");
+                    byte[] activeNow = this.reproductionQueue.toString().getBytes();
                     packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
                     multiSocket.send(packet); 
                 }

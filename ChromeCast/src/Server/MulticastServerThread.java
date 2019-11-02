@@ -15,13 +15,15 @@ public class MulticastServerThread extends Thread {
     private int progress = 0;
 
     private ArrayBlockingQueue<String> aQueue;
+    private ArrayBlockingQueue<String> reproductionQueue;
 
-    public MulticastServerThread(String ipMulticast, ArrayBlockingQueue<String> aQueue) throws IOException{
+    public MulticastServerThread(String ipMulticast, ArrayBlockingQueue<String> aQueue, ArrayBlockingQueue<String> reproductionQueue) throws IOException{
         super("MulticastServerThread");
         this.ipMulticast = ipMulticast;
         socket = new DatagramSocket(4445);
         state =  ServerStatus.STOP;
         this.aQueue = aQueue;
+        this.reproductionQueue = reproductionQueue;
     }
 
 	public void run(){
@@ -70,6 +72,7 @@ public class MulticastServerThread extends Thread {
                 data += "Stop";
                 break;
             case PLAY:
+                data += "Play_"+this.reproductionQueue.element();
                 data += anim.charAt(progress % anim.length()) + " " + progress + "% >> ";
                 progress++;
                 break;

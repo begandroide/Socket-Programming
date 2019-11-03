@@ -1,8 +1,8 @@
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import Protocol.Song;
 import Server.*;
 
 public class Server {
@@ -16,8 +16,8 @@ public class Server {
         try 
             {
                 ArrayBlockingQueue<String> bqueue = new ArrayBlockingQueue<String>(7,true); 
-                ArrayBlockingQueue<String> reproductionQueue = new ArrayBlockingQueue<String>(20,true); 
-                reproductionQueue.add("Foyone-Presidente");
+                ArrayBlockingQueue<Song> reproductionQueue = new ArrayBlockingQueue<Song>(20,true); 
+                reproductionQueue.add(new Song(1, "Presidente","Foyone",50));
                 new MulticastServerThread("230.0.0.1",bqueue,reproductionQueue).start(); 
                 new ServerCommandThread(bqueue,activeClients,reproductionQueue).start();
         } catch (IOException e) {

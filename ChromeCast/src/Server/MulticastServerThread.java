@@ -1,6 +1,9 @@
 package Server;
 import java.net.*;
 import java.util.concurrent.ArrayBlockingQueue;
+
+import Protocol.Song;
+
 import java.io.*;
 
 public class MulticastServerThread extends Thread {
@@ -12,18 +15,23 @@ public class MulticastServerThread extends Thread {
     protected Boolean moreQuotes = true;
 
     private ServerStatus state = null;
+    private ServerStatus previousState = null;
+    
     private int progress = 0;
+    private int maxProgress = 0;
 
     private ArrayBlockingQueue<String> aQueue;
-    private ArrayBlockingQueue<String> reproductionQueue;
+    private ArrayBlockingQueue<Song> reproductionQueue;
 
-    public MulticastServerThread(String ipMulticast, ArrayBlockingQueue<String> aQueue, ArrayBlockingQueue<String> reproductionQueue) throws IOException{
+    public MulticastServerThread(String ipMulticast, ArrayBlockingQueue<String> aQueue, ArrayBlockingQueue<Song> reproductionQueue) throws IOException{
         super("MulticastServerThread");
         this.ipMulticast = ipMulticast;
         socket = new DatagramSocket(4445);
         state =  ServerStatus.STOP;
+        previousState=  ServerStatus.STOP;
         this.aQueue = aQueue;
         this.reproductionQueue = reproductionQueue;
+        this.maxProgress = this.reproductionQueue.element().seconds;
     }
 
 	public void run(){
@@ -66,15 +74,31 @@ public class MulticastServerThread extends Thread {
     
     protected String getNextQuote(){
         String anim = "|/-\\";   
-        String data = "\r>>CCast_";     
+        String data = "\r>>CCast_";
+        if(previousState != state){
+            data = "\n" + data;
+            previousState = state;
+        } 
         switch (state) {
             case STOP:
                 data += "Stop";
                 break;
             case PLAY:
-                data += "Play_"+this.reproductionQueue.element();
-                data += anim.charAt(progress % anim.length()) + " " + progress + "% >> ";
-                progress++;
+                if(this.reproductionQueue.size()>0){
+                    if(progress == maxProgress){
+                        this.reproductionQueue.remove();
+                        progress = 0;
+                        maxProgress = 0;
+                        this.state = ServerStatus.EMPTY_QUEUE;
+                    } else{
+                        data += "Play_"+this.reproductionQueue.element().nameSong + " - "+this.reproductionQueue.element().author;
+                        data += anim.charAt(progress % anim.length()) + " " + progress + "[s] >> ";
+                        progress++;
+                    }
+                    break;
+                }
+            case EMPTY_QUEUE:
+                data += "Cola vacía _ (Añada canción para reproducir)";
                 break;
             case PAUSE:
                 data += "PAUSED _ (Pausa para reanudar)";

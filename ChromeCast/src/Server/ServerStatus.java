@@ -3,5 +3,6 @@ package Server;
 public enum ServerStatus {
     PLAY, 
     PAUSE,
-    STOP
+    STOP,
+    EMPTY_QUEUE
 }

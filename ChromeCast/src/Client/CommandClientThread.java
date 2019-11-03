@@ -49,7 +49,7 @@ public class CommandClientThread extends Thread {
 
             this.clientID = Integer.parseInt(received);
             System.out.println("Bienvenido a ChromeCast cliente: " + this.clientID);
-            System.out.println("ESPACIO y ENTER para enviar comando a servidor");
+            System.out.println("Presione c y ENTER para entrar a modo comandos a ChromeCast");
             System.out.println( kkp.processInput(null) );
 
             Boolean brokePipe = false;
@@ -58,32 +58,19 @@ public class CommandClientThread extends Thread {
                 fromUser = stdIn.readLine();
 
                 if (fromUser != null) {
-                    if(fromUser.compareTo(" ") == 0){
-                        System.out.println("Deteniendo multicast");
-                        this.bQueue.add(true);
-                        System.out.println("Escucha a ChromeCast pausada por tipeo de comando");
-                        sleep(1000);
-                        System.out.print("\r");
-                        for(int i = 0; i < 40 ; i++){
-                            System.out.print(" ");
+                    if(fromUser.compareTo("c") == 0){
+                        welcomeCommandMode();
+                        while( (fromUser = stdIn.readLine()).compareTo("exit") != 0 ){
+                            //tratamiento de user input
+                            processInput(fromUser, messageByte,packet, groupAddress);
+                            System.out.print("\r>>Client"+this.clientID+": ");
                         }
-                        System.out.print("\r>>Client"+this.clientID+": ");
-                        fromUser = stdIn.readLine();
-                        
-                    } 
-                    String command = "Client"+ String.valueOf( this.clientID ) + fromUser;
-                    this.historyCommands.add(command);
-                    
-                    messageByte =  fromUser.getBytes();
-                    
-                    packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
-                    kkSocket.send(packet);
-                    
-                    System.out.println("Se ha enviado petición: "+ fromUser + " al servidor");
-                    this.bQueue.clear();
+                        this.bQueue.clear();
+                    } else if(fromUser.compareTo("exit") == 0){
+                        System.out.println("a despedirse");
+                    }
                 }
             }
-            System.out.println("Chao compare!");
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
@@ -93,5 +80,40 @@ public class CommandClientThread extends Thread {
         } catch (InterruptedException e) {
             System.err.println("Problemas al intentar detener escuchas de ChromeCast para tipear comandos");
         }
+    }
+
+    private void processInput(String fromUser, byte[] messageByte, DatagramPacket packet, InetAddress groupAddress) throws IOException {
+
+        String[] aStrings = fromUser.split(" ");
+        
+        // System.out.println(aStrings);
+        
+        String command = "Client"+ String.valueOf( this.clientID ) + fromUser;
+        this.historyCommands.add(command);
+        
+        messageByte =  fromUser.getBytes();
+        
+        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+        kkSocket.send(packet);
+        
+        messageByte = new byte[1000];
+        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+        
+        kkSocket.receive(packet);
+
+        String received = new String(packet.getData(),0,packet.getLength());
+        System.out.println(received);        
+    }
+
+    private void welcomeCommandMode() throws InterruptedException {
+        System.out.println("Modo Comandos a ChromeCast");
+        this.bQueue.add(true);
+        System.out.println("Escucha a ChromeCast pausada por modo comando");
+        sleep(1000);
+        System.out.print("\r");
+        for(int i = 0; i < 40 ; i++){
+            System.out.print(" ");
+        }
+        System.out.print("\r>>Client"+this.clientID+": ");
     }
 }

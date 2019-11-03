@@ -3,6 +3,9 @@ package Server;
 import java.net.*;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
+
+import Protocol.Song;
+
 import java.io.*;
 
 public class ServerCommandThread extends Thread {
@@ -10,10 +13,10 @@ public class ServerCommandThread extends Thread {
     public final int MAX_QUEUE = 7;
     public Vector<String> Queue = new Vector<String>();
     private ArrayBlockingQueue<String> bQueue;
-    private ArrayBlockingQueue<String> reproductionQueue;
+    private ArrayBlockingQueue<Song> reproductionQueue;
     private int activeClients = 0;
 
-    public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients, ArrayBlockingQueue<String> reproductionQueue) throws IOException {
+    public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients, ArrayBlockingQueue<Song> reproductionQueue) throws IOException {
         super("ServerCommandThread");
         this.bQueue = bqueue;
         this.activeClients = activeClients;

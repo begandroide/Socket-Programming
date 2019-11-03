@@ -14,6 +14,7 @@ public class CommandClientThread extends Thread {
     protected int portNumber = 0; /// para escuchar comandos
     public int clientID = 0;
     protected List<String> historyCommands = null;
+    protected int numberCommands = 0;
     private ArrayBlockingQueue<Boolean> bQueue;
     
     public CommandClientThread(String port, ArrayBlockingQueue<Boolean> bqueue) throws IOException {
@@ -83,12 +84,18 @@ public class CommandClientThread extends Thread {
     }
 
     private void processInput(String fromUser, byte[] messageByte, DatagramPacket packet, InetAddress groupAddress) throws IOException {
-
+        if(fromUser.compareTo("History") == 0){
+            for (String b : historyCommands) {
+                System.out.println(b);
+            }
+            return;
+        }
         String[] aStrings = fromUser.split(" ");
         
         // System.out.println(aStrings);
         
-        String command = "Client"+ String.valueOf( this.clientID ) + fromUser;
+        String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;
+        numberCommands++;
         this.historyCommands.add(command);
         
         messageByte =  fromUser.getBytes();

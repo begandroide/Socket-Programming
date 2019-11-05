@@ -41,34 +41,39 @@ public class ServerCommandThread extends Thread {
                 multiSocket.receive(packet);
     
                 String received = new String(packet.getData(),0,packet.getLength());
-                //HelloChromeCast
-                if(received.compareTo("HelloChromeCast") == 0){
-                    System.out.println("Nuevo cliente");
-                    activeClients++;
-                    byte[] activeNow = String.valueOf( activeClients ).getBytes();
-                    packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
-                    multiSocket.send(packet); 
-                }
-                if(received.compareTo("Queue") == 0){
-                    System.out.println("Consulta cola");
-                    byte[] activeNow = this.reproductionQueue.toString().getBytes();
-                    packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
-                    multiSocket.send(packet); 
-                }
-                if(received.contains("Queue(")){
-                    System.out.println("Añade cola");
-                    byte[] activeNow = this.reproductionQueue.toString().getBytes();
-                    packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
-                    multiSocket.send(packet); 
-                }
+
+                decodeReceived(received, packet, multiSocket);
+                
                 System.out.println(received);
-                bQueue.add(received);
+                if( (!received.contains("Hello") && !received.contains("Queue")) ) bQueue.add(received);
             }
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    
+    }
+
+    private void decodeReceived(String received, DatagramPacket packet, MulticastSocket multiSocket) throws IOException{ 
+        //HelloChromeCast
+        if(received.compareTo("HelloChromeCast") == 0){
+            System.out.println("Nuevo cliente");
+            activeClients++;
+            byte[] activeNow = String.valueOf( activeClients ).getBytes();
+            packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
+            multiSocket.send(packet); 
+        }
+        if(received.compareTo("Queue") == 0){
+            System.out.println("Consulta cola");
+            byte[] activeNow = this.reproductionQueue.toString().getBytes();
+            packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
+            multiSocket.send(packet); 
+        }
+        if(received.contains("Queue(")){
+            System.out.println("Añade cola");
+            byte[] activeNow = this.reproductionQueue.toString().getBytes();
+            packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
+            multiSocket.send(packet); 
+        }
     }
 }

@@ -90,8 +90,17 @@ public class CommandClientThread extends Thread {
             }
             return;
         }
-        String[] aStrings = fromUser.split(" ");
+
+        if(fromUser.contains("Pause") || fromUser.contains("Play") || fromUser.contains("Stop")){
+            String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;
+            numberCommands++;
+            this.historyCommands.add(command);
+            messageByte =  fromUser.getBytes();
         
+            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+            kkSocket.send(packet);
+            return;
+        }
         // System.out.println(aStrings);
         
         String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;

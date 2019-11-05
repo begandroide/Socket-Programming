@@ -15,8 +15,8 @@ public class Client {
             System.exit(1);
         }
 
+        ArrayBlockingQueue<Boolean> bqueue = new ArrayBlockingQueue<Boolean>(1,true); 
         try {
-            ArrayBlockingQueue<Boolean> bqueue = new ArrayBlockingQueue<Boolean>(1,true); 
             new CommandClientThread(args[0],bqueue).start();
             new MulticastClientThread(bqueue).start();
 		} catch (java.net.BindException e) {

@@ -89,7 +89,7 @@ public class MulticastServerThread extends Thread {
                         this.reproductionQueue.remove();
                         progress = 0;
                         maxProgress = 0;
-                        this.state = ServerStatus.EMPTY_QUEUE;
+                        this.state = ServerStatus.STOP;
                     } else{
                         data += "Play_"+this.reproductionQueue.element().nameSong + " - "+this.reproductionQueue.element().author;
                         data += anim.charAt(progress % anim.length()) + " " + progress + "[s] >> ";
@@ -97,9 +97,6 @@ public class MulticastServerThread extends Thread {
                     }
                     break;
                 }
-            case EMPTY_QUEUE:
-                data += "Cola vacía _ (Añada canción para reproducir)";
-                break;
             case PAUSE:
                 data += "PAUSED _ (Pausa para reanudar)";
                 break;
@@ -111,15 +108,26 @@ public class MulticastServerThread extends Thread {
     }
 
     protected void processMessage(String inMString){
-        switch (inMString) {
-            case "0":
+        //Play_<cancion>-<autor>_<segundos>
+        String[] inListString = inMString.split("_");
+        switch (inListString[0]) {
+            case "Play":
+                //tomar canción y reproducir ¿sin importar orden? que pasa con la cola?
                 state = ServerStatus.PLAY;
                 break;
-            case "1":
+            case "stop":
+            case "Stop":
+                //limpiar cola de reproducción
+                reproductionQueue.clear();
                 state = ServerStatus.STOP;
                 break;
-            case "2":
-                state = ServerStatus.PAUSE;            
+            case "pause":
+            case "Pause":
+                if(state == ServerStatus.PAUSE){
+                    state = ServerStatus.PLAY;
+                } else{
+                    state = ServerStatus.PAUSE;       
+                }
                 break;
             default:
                 break;

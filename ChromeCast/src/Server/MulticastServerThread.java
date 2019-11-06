@@ -89,7 +89,12 @@ public class MulticastServerThread extends Thread {
                         this.reproductionQueue.remove();
                         progress = 0;
                         maxProgress = 0;
-                        this.state = ServerStatus.STOP;
+                        //si hay mas canciones en la cola, cambiar la canción
+                        if(this.reproductionQueue.size()>0){
+                            maxProgress = this.reproductionQueue.element().seconds;
+                        } else{
+                            this.state = ServerStatus.STOP;
+                        }
                     } else{
                         data += "Play_"+this.reproductionQueue.element().nameSong + " - "+this.reproductionQueue.element().author;
                         data += anim.charAt(progress % anim.length()) + " " + progress + "[s] >> ";
@@ -107,13 +112,16 @@ public class MulticastServerThread extends Thread {
         return data;
     }
 
-    protected void processMessage(String inMString){
+    protected void processMessage(String inMString) throws NumberFormatException, InterruptedException {
         //Play_<cancion>-<autor>_<segundos>
         String[] inListString = inMString.split("_");
         switch (inListString[0]) {
             case "Play":
                 //tomar canción y reproducir ¿sin importar orden? que pasa con la cola?
+                String[] themeAuthor = inListString[1].split("-");
+                reproductionQueue.put(new Song(2,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
                 state = ServerStatus.PLAY;
+                maxProgress = Integer.valueOf(inListString[2]);
                 break;
             case "stop":
             case "Stop":

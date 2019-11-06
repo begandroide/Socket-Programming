@@ -33,8 +33,6 @@ public class ServerCommandThread extends Thread {
             multiSocket.joinGroup(address);
             while(moreQuotes){
     
-                //create a MulticastSocket
-    
                 DatagramPacket packet;
                 byte[] buf = new byte[256];
                 packet = new DatagramPacket(buf, buf.length);
@@ -56,6 +54,7 @@ public class ServerCommandThread extends Thread {
 
     private void decodeReceived(String received, DatagramPacket packet, MulticastSocket multiSocket) throws IOException{ 
         //HelloChromeCast
+        
         if(received.compareTo("HelloChromeCast") == 0){
             System.out.println("Nuevo cliente");
             activeClients++;

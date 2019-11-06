@@ -1,5 +1,6 @@
 package Server;
 import java.net.*;
+import java.util.Deque;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import Protocol.Song;
@@ -21,16 +22,16 @@ public class MulticastServerThread extends Thread {
     private int maxProgress = 0;
 
     private ArrayBlockingQueue<String> aQueue;
-    private ArrayBlockingQueue<Song> reproductionQueue;
+    private Deque<Song> reproductionQueue;
 
-    public MulticastServerThread(String ipMulticast, ArrayBlockingQueue<String> aQueue, ArrayBlockingQueue<Song> reproductionQueue) throws IOException{
+    public MulticastServerThread(String ipMulticast, ArrayBlockingQueue<String> aQueue, Deque<Song> reproductionQueue2) throws IOException{
         super("MulticastServerThread");
         this.ipMulticast = ipMulticast;
         socket = new DatagramSocket(4445);
         state =  ServerStatus.STOP;
         previousState=  ServerStatus.STOP;
         this.aQueue = aQueue;
-        this.reproductionQueue = reproductionQueue;
+        this.reproductionQueue = reproductionQueue2;
         this.maxProgress = this.reproductionQueue.element().seconds;
     }
 
@@ -119,7 +120,7 @@ public class MulticastServerThread extends Thread {
             case "Play":
                 //tomar canción y reproducir ¿sin importar orden? que pasa con la cola?
                 String[] themeAuthor = inListString[1].split("-");
-                reproductionQueue.put(new Song(2,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
+                reproductionQueue.addFirst(new Song(2,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
                 state = ServerStatus.PLAY;
                 maxProgress = Integer.valueOf(inListString[2]);
                 break;

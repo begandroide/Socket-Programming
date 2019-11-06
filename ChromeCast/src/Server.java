@@ -1,5 +1,7 @@
 
 import java.io.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import Protocol.Song;
@@ -15,7 +17,7 @@ public class Server {
         
         int activeClients = 0;
         ArrayBlockingQueue<String> bqueue = new ArrayBlockingQueue<String>(7,true); 
-        ArrayBlockingQueue<Song> reproductionQueue = new ArrayBlockingQueue<Song>(20,true); 
+        Deque<Song> reproductionQueue = new ArrayDeque<Song>();
         reproductionQueue.add(new Song(1, "Presidente","Foyone",50));
         try 
         {

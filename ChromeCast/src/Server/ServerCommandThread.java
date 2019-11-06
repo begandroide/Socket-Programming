@@ -1,6 +1,7 @@
 package Server;
 
 import java.net.*;
+import java.util.Deque;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -13,14 +14,14 @@ public class ServerCommandThread extends Thread {
     public final int MAX_QUEUE = 7;
     public Vector<String> Queue = new Vector<String>();
     private ArrayBlockingQueue<String> bQueue;
-    private ArrayBlockingQueue<Song> reproductionQueue;
+    private Deque<Song> reproductionQueue;
     private int activeClients = 0;
 
-    public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients, ArrayBlockingQueue<Song> reproductionQueue) throws IOException {
+    public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients, Deque<Song> reproductionQueue2) throws IOException {
         super("ServerCommandThread");
         this.bQueue = bqueue;
         this.activeClients = activeClients;
-        this.reproductionQueue = reproductionQueue;
+        this.reproductionQueue = reproductionQueue2;
     }
 
     public void run() {

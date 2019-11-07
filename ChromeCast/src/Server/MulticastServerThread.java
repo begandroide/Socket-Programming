@@ -104,7 +104,7 @@ public class MulticastServerThread extends Thread {
                     break;
                 }
             case PAUSE:
-                data += "PAUSED _ (Pausa para reanudar)";
+                data += "PAUSED _ (Pausa en modo comandos para reanudar)";
                 break;
             default:
                 break;
@@ -114,15 +114,23 @@ public class MulticastServerThread extends Thread {
     }
 
     protected void processMessage(String inMString) throws NumberFormatException, InterruptedException {
+        //Queue_<cancion>-<autor>_<segundos>
         //Play_<cancion>-<autor>_<segundos>
         String[] inListString = inMString.split("_");
+        String[] themeAuthor;
         switch (inListString[0]) {
+            case "play":
             case "Play":
                 //tomar canción y reproducir ¿sin importar orden? que pasa con la cola?
-                String[] themeAuthor = inListString[1].split("-");
+                themeAuthor = inListString[1].split("-");
                 reproductionQueue.addFirst(new Song(2,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
                 state = ServerStatus.PLAY;
                 maxProgress = Integer.valueOf(inListString[2]);
+                break;
+            case "queue":
+            case "Queue":
+                themeAuthor = inListString[1].split("-");
+                reproductionQueue.addLast(new Song(2,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
                 break;
             case "stop":
             case "Stop":

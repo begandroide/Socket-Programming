@@ -44,7 +44,8 @@ public class ServerCommandThread extends Thread {
                 decodeReceived(received, packet, multiSocket);
                 
                 System.out.println(received);
-                if( (!received.contains("Hello") && !received.contains("Queue")) ) bQueue.add(received);
+                String cmp = received.toLowerCase();
+                if( (!cmp.contains("hello") && !(cmp.compareTo("queue") == 0) )) bQueue.add(received);
             }
 
         } catch (IOException e) {
@@ -65,12 +66,6 @@ public class ServerCommandThread extends Thread {
         }
         if(received.compareTo("Queue") == 0){
             System.out.println("Consulta cola");
-            byte[] activeNow = this.reproductionQueue.toString().getBytes();
-            packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
-            multiSocket.send(packet); 
-        }
-        if(received.contains("Queue(")){
-            System.out.println("Añade cola");
             byte[] activeNow = this.reproductionQueue.toString().getBytes();
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
             multiSocket.send(packet); 

@@ -84,14 +84,16 @@ public class CommandClientThread extends Thread {
     }
 
     private void processInput(String fromUser, byte[] messageByte, DatagramPacket packet, InetAddress groupAddress) throws IOException {
-        if(fromUser.compareTo("History") == 0){
+        String toLow = fromUser.toLowerCase();
+
+        if(toLow.compareTo("history") == 0){
             for (String b : historyCommands) {
                 System.out.println(b);
             }
+            numberCommands++;
             return;
         }
-
-        if(fromUser.contains("Pause") || fromUser.contains("Play") || fromUser.contains("Stop")){
+        if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_")){
             String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;
             numberCommands++;
             this.historyCommands.add(command);

@@ -16,6 +16,6 @@ public class Song {
 
     @Override
     public String toString(){
-        return "id:"+id+","+nameSong+"-"+author+"-"+seconds+"[s]";
+        return "{id:"+id+","+nameSong+"-"+author+"-"+seconds+"[s]}";
     }
 }

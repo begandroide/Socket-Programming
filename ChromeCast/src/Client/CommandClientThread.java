@@ -51,6 +51,7 @@ public class CommandClientThread extends Thread {
             this.clientID = Integer.parseInt(received);
             System.out.println("Bienvenido a ChromeCast cliente: " + this.clientID);
             System.out.println("Presione c y ENTER para entrar a modo comandos a ChromeCast");
+            System.out.println("Presione q y ENTER para Salir");
             System.out.println( kkp.processInput(null) );
 
             Boolean brokePipe = false;
@@ -93,7 +94,7 @@ public class CommandClientThread extends Thread {
             numberCommands++;
             return;
         }
-        if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_")){
+        if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_") || toLow.contains("next")){
             String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;
             numberCommands++;
             this.historyCommands.add(command);
@@ -103,8 +104,7 @@ public class CommandClientThread extends Thread {
             kkSocket.send(packet);
             return;
         }
-        // System.out.println(aStrings);
-        
+
         String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;
         numberCommands++;
         this.historyCommands.add(command);
@@ -129,7 +129,7 @@ public class CommandClientThread extends Thread {
         System.out.println("Escucha a ChromeCast pausada por modo comando");
         sleep(1000);
         System.out.print("\r");
-        for(int i = 0; i < 40 ; i++){
+        for(int i = 0; i < 60 ; i++){
             System.out.print(" ");
         }
         System.out.print("\r>>Client"+this.clientID+": ");

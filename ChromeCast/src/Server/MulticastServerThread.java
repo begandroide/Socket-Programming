@@ -123,14 +123,14 @@ public class MulticastServerThread extends Thread {
             case "Play":
                 //tomar canción y reproducir ¿sin importar orden? que pasa con la cola?
                 themeAuthor = inListString[1].split("-");
-                reproductionQueue.addFirst(new Song(2,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
+                reproductionQueue.addFirst(new Song(reproductionQueue.size()+1,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
                 state = ServerStatus.PLAY;
                 maxProgress = Integer.valueOf(inListString[2]);
                 break;
             case "queue":
             case "Queue":
                 themeAuthor = inListString[1].split("-");
-                reproductionQueue.addLast(new Song(2,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
+                reproductionQueue.addLast(new Song(reproductionQueue.size()+1,themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2])));
                 break;
             case "stop":
             case "Stop":
@@ -144,6 +144,12 @@ public class MulticastServerThread extends Thread {
                     state = ServerStatus.PLAY;
                 } else{
                     state = ServerStatus.PAUSE;       
+                }
+                break;
+            case "next":
+            case "Next":
+                if(reproductionQueue.size()>1){
+                    reproductionQueue.removeFirst();
                 }
                 break;
             default:

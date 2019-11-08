@@ -50,8 +50,6 @@ public class CommandClientThread extends Thread {
 
             this.clientID = Integer.parseInt(received);
             System.out.println("Bienvenido a ChromeCast cliente: " + this.clientID);
-            System.out.println("Presione c y ENTER para entrar a modo comandos a ChromeCast");
-            System.out.println("Presione q y ENTER para Salir");
             System.out.println( kkp.processInput(null) );
 
             Boolean brokePipe = false;
@@ -87,51 +85,55 @@ public class CommandClientThread extends Thread {
     private void processInput(String fromUser, byte[] messageByte, DatagramPacket packet, InetAddress groupAddress) throws IOException {
         String toLow = fromUser.toLowerCase();
 
+        registerCommand(fromUser);
+        messageByte =  fromUser.getBytes();
+        
         if(toLow.compareTo("history") == 0){
             for (String b : historyCommands) {
                 System.out.println(b);
             }
-            numberCommands++;
-            return;
-        }
-        if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_") || toLow.contains("next")){
-            String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;
-            numberCommands++;
-            this.historyCommands.add(command);
-            messageByte =  fromUser.getBytes();
-        
+        } else if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_") || toLow.contains("next")){
+
             packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
             kkSocket.send(packet);
-            return;
+        } else if(toLow.compareTo("queue") == 0 ){
+
+            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+            kkSocket.send(packet);
+            
+            messageByte = new byte[1000];
+            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+            
+            kkSocket.receive(packet);
+    
+            String received = new String(packet.getData(),0,packet.getLength());
+            System.out.println(received);        
+        } else{
+            //no se entienden
+            System.out.println("Comando no conocido");
         }
+    }
 
+    private void registerCommand(String fromUser){
         String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;
-        numberCommands++;
+        increaseCommandNumber();
         this.historyCommands.add(command);
-        
-        messageByte =  fromUser.getBytes();
-        
-        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
-        kkSocket.send(packet);
-        
-        messageByte = new byte[1000];
-        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
-        
-        kkSocket.receive(packet);
-
-        String received = new String(packet.getData(),0,packet.getLength());
-        System.out.println(received);        
     }
 
     private void welcomeCommandMode() throws InterruptedException {
         System.out.println("Modo Comandos a ChromeCast");
+        //solicitamos bloquear escucha a thread chromecast
         this.bQueue.add(true);
         System.out.println("Escucha a ChromeCast pausada por modo comando");
         sleep(1000);
         System.out.print("\r");
         for(int i = 0; i < 60 ; i++){
-            System.out.print(" ");
+            System.out.print("  ");
         }
         System.out.print("\r>>Client"+this.clientID+": ");
+    }
+
+    private void increaseCommandNumber(){
+        this.numberCommands++;
     }
 }

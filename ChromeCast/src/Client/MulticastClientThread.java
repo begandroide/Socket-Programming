@@ -10,10 +10,12 @@ public class MulticastClientThread extends Thread {
     protected MulticastSocket multiSocket = null;
     protected InetAddress address = null;
     private ArrayBlockingQueue<Boolean> bQueue;
+    private Object lock = null;
 
-    public MulticastClientThread(ArrayBlockingQueue<Boolean> bqueue) throws IOException {
+    public MulticastClientThread(ArrayBlockingQueue<Boolean> bqueue, Object lock) throws IOException {
         this("MulticastClientThread");
         this.bQueue = bqueue;
+        this.lock = lock;
     }
 
     public MulticastClientThread(String name) throws IOException {
@@ -39,7 +41,9 @@ public class MulticastClientThread extends Thread {
                     String received = new String(packet.getData(),0,packet.getLength());
                     System.out.print( received + "\033[3C");
                 } else{
-                    sleep(1000);
+                    synchronized(lock){
+                        lock.wait();
+                    }
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block

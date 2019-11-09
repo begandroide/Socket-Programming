@@ -9,21 +9,24 @@ import java.util.concurrent.ArrayBlockingQueue;
 import Protocol.KnockKnockProtocol;
 
 public class CommandClientThread extends Thread {
+
+    public int clientID = 0;
     protected DatagramSocket kkSocket = null;
     protected String hostName = "230.0.0.1";
     protected int portNumber = 0; /// para escuchar comandos
-    public int clientID = 0;
     protected List<String> historyCommands = null;
     protected int numberCommands = 0;
     private ArrayBlockingQueue<Boolean> bQueue;
+    private Object lock = null;
     
-    public CommandClientThread(String port, ArrayBlockingQueue<Boolean> bqueue) throws IOException {
+    public CommandClientThread(String port, ArrayBlockingQueue<Boolean> bqueue, Object lock) throws IOException {
         super("CommandClientThread");
         this.portNumber = Integer.parseInt(port);
         // socket del cliente, conectado al server en el puerto arg
         kkSocket = new DatagramSocket(this.portNumber);
         this.historyCommands = new ArrayList<String>();
         this.bQueue = bqueue;
+        this.lock = lock;
     }
     
     public void run() {
@@ -66,8 +69,12 @@ public class CommandClientThread extends Thread {
                             System.out.print("\r>>Client"+this.clientID+": ");
                         }
                         this.bQueue.clear();
+                        synchronized(lock){
+                            this.lock.notify();
+                        }
                     } else if(fromUser.compareTo("exit") == 0){
                         System.out.println("a despedirse");
+                        System.exit(1);
                     }
                 }
             }

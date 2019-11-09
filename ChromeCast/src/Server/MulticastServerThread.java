@@ -12,7 +12,6 @@ public class MulticastServerThread extends Thread {
     private long ONE_SECONDS = 1000;
     private String ipMulticast = "";
     protected DatagramSocket socket = null;
-    protected BufferedReader in = null;
     protected Boolean moreQuotes = true;
 
     private ServerStatus state = null;

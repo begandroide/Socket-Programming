@@ -152,6 +152,15 @@ public class MulticastServerThread extends Thread {
                     reproductionQueue.removeFirst();
                 }
                 break;
+            case "jump":
+            case "Jump":
+                int position = Integer.valueOf( inListString[1] );
+                if(reproductionQueue.size()>=position){
+                    for(int i = 0; i < position; i++){
+                        reproductionQueue.removeFirst();
+                    }
+                }
+                break;
             default:
                 break;
         }

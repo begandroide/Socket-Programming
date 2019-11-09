@@ -65,7 +65,7 @@ public class KnockKnockProtocol {
                     + ANSI_PURPLE+"[3]"+ANSI_RESET+" Queue ----> uso: (1) Queue -> consulta la cola\n"
                     + ANSI_PURPLE+"   "+ANSI_RESET+"                  (2) Queue(<cancion>) -> añade canción a la cola\n"
                     + ANSI_PURPLE+"[4]"+ANSI_RESET+" Next  ----> uso: Next\n"
-                    + ANSI_PURPLE+"[5]"+ANSI_RESET+" Jump  ----> uso: Jump\n"
+                    + ANSI_PURPLE+"[5]"+ANSI_RESET+" Jump  ----> uso: Jump_<posicion(desde 1: head=0)>\n"
                     + ANSI_PURPLE+"[6]"+ANSI_RESET+" Commands -> Mostrar historial de comandos\n"
                     + ANSI_PURPLE+"[7]"+ANSI_RESET+" Help: Mostrar historial de comandos\n"
                     + ANSI_PURPLE+"[8]"+ANSI_RESET+" Exit...\n";

@@ -92,7 +92,7 @@ public class CommandClientThread extends Thread {
             for (String b : historyCommands) {
                 System.out.println(b);
             }
-        } else if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_") || toLow.contains("next")){
+        } else if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_") || toLow.contains("next") || toLow.contains("jump")){
 
             packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
             kkSocket.send(packet);

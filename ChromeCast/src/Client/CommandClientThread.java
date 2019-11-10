@@ -18,6 +18,8 @@ public class CommandClientThread extends Thread {
     protected int numberCommands = 0;
     private ArrayBlockingQueue<Boolean> bQueue;
     private Object lock = null;
+    private DatagramPacket packet = null;
+    private KnockKnockProtocol kkp;
     
     public CommandClientThread(String port, ArrayBlockingQueue<Boolean> bqueue, Object lock) throws IOException {
         super("CommandClientThread");
@@ -27,6 +29,7 @@ public class CommandClientThread extends Thread {
         this.historyCommands = new ArrayList<String>();
         this.bQueue = bqueue;
         this.lock = lock;
+        kkp = new KnockKnockProtocol(hostName,packet,kkSocket);
     }
     
     public void run() {
@@ -37,23 +40,7 @@ public class CommandClientThread extends Thread {
             
             byte[] messageByte = new byte[1000];
             
-            KnockKnockProtocol kkp = new KnockKnockProtocol();
-            //mensaje de bienvenida
-
-            messageByte =  "HelloChromeCast".getBytes();
-            InetAddress groupAddress = InetAddress.getByName(hostName);
-    
-            DatagramPacket packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
-            kkSocket.send(packet); 
-
-            //esperar id de cliente de servidor
-            kkSocket.receive(packet);
-
-            String received = new String(packet.getData(),0,packet.getLength());
-
-            this.clientID = Integer.parseInt(received);
-            System.out.println("Bienvenido a ChromeCast cliente: " + this.clientID);
-            System.out.println( kkp.processInput(null) );
+            this.clientID = kkp.HelloChromeCast(messageByte);
 
             Boolean brokePipe = false;
             while(!brokePipe){
@@ -65,7 +52,17 @@ public class CommandClientThread extends Thread {
                         welcomeCommandMode();
                         while( (fromUser = stdIn.readLine()).compareTo("exit") != 0 ){
                             //tratamiento de user input
-                            processInput(fromUser, messageByte,packet, groupAddress);
+                            registerCommand(fromUser);
+                            String toLow = fromUser.toLowerCase();
+        
+                            if(toLow.compareTo("history") == 0){
+                                for (String b : historyCommands) {
+                                    System.out.println(b);
+                                }
+                            } else{
+                                kkp.processInput(fromUser, messageByte);
+                            }
+                        
                             System.out.print("\r>>Client"+this.clientID+": ");
                         }
                         this.bQueue.clear();
@@ -86,38 +83,6 @@ public class CommandClientThread extends Thread {
             System.exit(1);
         } catch (InterruptedException e) {
             System.err.println("Problemas al intentar detener escuchas de ChromeCast para tipear comandos");
-        }
-    }
-
-    private void processInput(String fromUser, byte[] messageByte, DatagramPacket packet, InetAddress groupAddress) throws IOException {
-        String toLow = fromUser.toLowerCase();
-
-        registerCommand(fromUser);
-        messageByte =  fromUser.getBytes();
-        
-        if(toLow.compareTo("history") == 0){
-            for (String b : historyCommands) {
-                System.out.println(b);
-            }
-        } else if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_") || toLow.contains("next") || toLow.contains("jump")){
-
-            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
-            kkSocket.send(packet);
-        } else if(toLow.compareTo("queue") == 0 ){
-
-            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
-            kkSocket.send(packet);
-            
-            messageByte = new byte[1000];
-            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
-            
-            kkSocket.receive(packet);
-    
-            String received = new String(packet.getData(),0,packet.getLength());
-            System.out.println(received);        
-        } else{
-            //no se entienden
-            System.out.println("Comando no conocido");
         }
     }
 

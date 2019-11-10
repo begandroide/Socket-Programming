@@ -45,7 +45,7 @@ public class ServerCommandThread extends Thread {
                 
                 System.out.println(received);
                 String cmp = received.toLowerCase();
-                if( (!cmp.contains("hello") && !(cmp.compareTo("queue") == 0) )) bQueue.add(received);
+                if( (!cmp.contains("hello") && !(cmp.compareTo("queue") == 0) && !(cmp.contains("byebye")) )) bQueue.add(received);
             }
 
         } catch (IOException e) {
@@ -64,11 +64,14 @@ public class ServerCommandThread extends Thread {
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
             multiSocket.send(packet); 
         }
-        if(received.compareTo("Queue") == 0){
+        if( (received.compareTo("Queue") == 0) || (received.compareTo("queue") == 0) ){
             System.out.println("Consulta cola");
             byte[] activeNow = this.reproductionQueue.toString().getBytes();
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
             multiSocket.send(packet); 
+        }
+        if(received.compareTo("ByeByeChromeCast") == 0){
+            activeClients--;
         }
     }
 }

@@ -47,7 +47,7 @@ public class KnockKnockProtocol {
         
         int clientID = Integer.parseInt(received);
         System.out.println("Bienvenido a ChromeCast cliente: " + clientID);
-        System.out.println( processInput(null) );
+        System.out.println( welcomeMessage() );
 
         return clientID;
     }
@@ -58,68 +58,53 @@ public class KnockKnockProtocol {
 
         messageByte =  fromUser.getBytes();
         
-        if(toLow.contains("pause") || toLow.contains("play") || toLow.contains("stop") || toLow.contains("queue_") || toLow.contains("next") || toLow.contains("jump")){
+        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+        if( isOnlySend(toLow) ){
 
-            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
             kkSocket.send(packet);
         } else if(toLow.compareTo("queue") == 0 ){
 
-            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
             kkSocket.send(packet);
             
             messageByte = new byte[1000];
+            
             packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
             
             kkSocket.receive(packet);
     
             String received = new String(packet.getData(),0,packet.getLength());
             System.out.println(received);        
+        } else if(toLow.compareTo("help") == 0){
+            System.out.println( this.getCommandsAvailable() );
         } else{
             //no se entienden
             System.out.println("Comando no conocido");
         }
     }
 
-    public String processInput(String theInput) {
+    private Boolean isOnlySend(String word){
+        Boolean flag = false;
+        if(word.contains("pause") || word.contains("next") || word.contains("jump")){
+            flag = true;
+        } else if(word.contains("play") || word.contains("stop") || word.contains("queue_")){
+            flag = true;
+        } 
+
+        return flag;
+    }
+
+    public String welcomeMessage() {
         String theOutput = "";
 
         //only first time --> protocol
-        if (theInput == null){
-            theOutput = "Presione c y ENTER para entrar a modo comandos a ChromeCast\n"
-                        + "Presione q y ENTER para Salir\n";
-            theOutput = " ------------------------------ \n" 
-                    +   "/------------------------------\\\n" 
-                    +   "|------------------------------|\n" 
-                    +   "|---------"+ANSI_GREEN+"W e l c o m e"+ANSI_RESET+"--------|\n" 
-                    +   "|------------------------------|\n" 
-                    +   "|------------------------------|\n" 
-                    +   " \\----------------------------/\n";
-            theOutput += this.getCommandsAvailable(); 
-        }else{
-            switch (theInput) {
-                case "0":
-                    theOutput = "Hello ma' friend!";
-                    break;
-                case "1":
-                    theOutput = "John Tell me that today is raining";
-                    break;
-                case "2":
-                    theOutput = "HAHHAA!";
-                    break;
-                case "3":
-                    theOutput = "¡Good Jaming!";
-                    break;
-                case "4":
-                    theOutput = this.getCommandsAvailable();
-                    break;
-                case "6":
-                    theOutput = "Bye ma' friend!";
-                    break;
-                default:
-                    theOutput += this.getCommandsAvailable();
-                    break;
-            }
-        }
+        theOutput = "Presione c y ENTER para entrar a modo comandos a ChromeCast\n"
+                    + "Presione q y ENTER para Salir\n";
+        theOutput = " ------------------------------ \n" 
+                +   "/------------------------------\\\n" 
+                +   "|---------"+ANSI_GREEN+"W e l c o m e"+ANSI_RESET+"--------|\n" 
+                +   "|------------------------------|\n" 
+                +   " \\----------------------------/\n";
+        theOutput += this.getCommandsAvailable(); 
 
         return theOutput;
     }

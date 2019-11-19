@@ -1,12 +1,12 @@
 package Client;
 
+import ClientProtocol.KnockKnockProtocol;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import Protocol.KnockKnockProtocol;
 
 public class CommandClientThread extends Thread {
 
@@ -32,6 +32,7 @@ public class CommandClientThread extends Thread {
         kkp = new KnockKnockProtocol(hostName,packet,kkSocket);
     }
     
+    @Override
     public void run() {
         try
         {

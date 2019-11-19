@@ -1,11 +1,9 @@
 
+import Player.Player;
+import Server.*;
 import java.io.*;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import Protocol.Song;
-import Server.*;
 
 public class Server {
     public static void main(String[] args) throws IOException {
@@ -17,12 +15,11 @@ public class Server {
         
         int activeClients = 0;
         ArrayBlockingQueue<String> bqueue = new ArrayBlockingQueue<String>(7,true); 
-        Deque<Song> reproductionQueue = new ArrayDeque<Song>();
-        reproductionQueue.add(new Song(1, "Presidente","Foyone",50));
+        Player player = new Player();
         try 
         {
-            new MulticastServerThread("230.0.0.1",bqueue,reproductionQueue).start(); 
-            new ServerCommandThread(bqueue,activeClients,reproductionQueue).start();
+            new MulticastServerThread("230.0.0.1",bqueue,player).start(); 
+            new ServerCommandThread(bqueue,activeClients,player).start();
 
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "

@@ -1,29 +1,29 @@
 package Server;
 
+import Player.Player;
+import java.io.*;
 import java.net.*;
-import java.util.Deque;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import Protocol.Song;
 
-import java.io.*;
 
 public class ServerCommandThread extends Thread {
     private boolean moreQuotes = true;
     public final int MAX_QUEUE = 7;
     public Vector<String> Queue = new Vector<String>();
     private ArrayBlockingQueue<String> bQueue;
-    private Deque<Song> reproductionQueue;
+    private Player player;
     private int activeClients = 0;
 
-    public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients, Deque<Song> reproductionQueue2) throws IOException {
+    public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients, Player player) throws IOException {
         super("ServerCommandThread");
         this.bQueue = bqueue;
         this.activeClients = activeClients;
-        this.reproductionQueue = reproductionQueue2;
+        this.player = player;
     }
 
+    @Override
     public void run() {
         InetAddress address;
         try(
@@ -66,7 +66,7 @@ public class ServerCommandThread extends Thread {
         }
         if( (received.compareTo("Queue") == 0) || (received.compareTo("queue") == 0) ){
             System.out.println("Consulta cola");
-            byte[] activeNow = this.reproductionQueue.toString().getBytes();
+            byte[] activeNow = player.reproductionQueueToString();
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
             multiSocket.send(packet); 
         }

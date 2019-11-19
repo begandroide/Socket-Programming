@@ -1,4 +1,4 @@
-package Protocol;
+package ClientProtocol;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

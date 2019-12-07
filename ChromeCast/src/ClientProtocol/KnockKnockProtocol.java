@@ -99,11 +99,7 @@ public class KnockKnockProtocol {
         //only first time --> protocol
         theOutput = "Presione c y ENTER para entrar a modo comandos a ChromeCast\n"
                     + "Presione q y ENTER para Salir\n";
-        theOutput = " ------------------------------ \n" 
-                +   "/------------------------------\\\n" 
-                +   "|---------"+ANSI_GREEN+"W e l c o m e"+ANSI_RESET+"--------|\n" 
-                +   "|------------------------------|\n" 
-                +   " \\----------------------------/\n";
+        theOutput += this.banner;
         theOutput += this.getCommandsAvailable(); 
 
         return theOutput;
@@ -124,4 +120,24 @@ public class KnockKnockProtocol {
                     + ANSI_PURPLE+"[8]"+ANSI_RESET+" Exit...\n";
         return outString;
     }
+
+
+    private String banner =
+    "────·────·───·────·────·────·────·────·─────·─────·────·────·────·────·────·\n"+
+    "      _____   __    __   ___ _   ____   ____     ____  ______               \n"+
+    "     /  ___| |  |  |  | |  |/ | /    \\ |   \\   /   | |  ____|             \n"+
+    "    |  |     |  |__|  | |   _/ |  ──  | |    \\_/    | | |___               \n"+
+    "    |  |___  |   __   | |  |   | |  | | |  |\\___/|  | | |____              \n"+
+    "     \\    | |  |  |  | |  |   |  ──  | |  |     |  | |      |              \n"+
+    "      ─────  ────  ────  ──     ──────  ────     ────  ──────               \n"+
+    "               _____   _____   ______     ______________                    \n"+
+    "              /  ___| |  _  | |  _____| |←↓→ ←↓→ ←↓→ ←↓|                    \n"+ 
+    "             |  |     | |_| | \\  \\____   ─── ←↓→ ──────                   \n"+ 
+    "             |  |___  | |─| |  ______//     |←↓→|                           \n"+ 
+    "              \\    | | | | | /      /      |←↓→|                           \n"+ 
+    "               ─────   ─   ─   ──────       ─────      ¢ŧłø                 \n"+
+    "                       By @begandroide                                      \n"+ 
+    "         Herramienta de simulación de un reproductor ChromeCast             \n"+ 
+    "────·────·───·────·────·────·────·────·─────·─────·────·────·────·────·────·\n";
+
 }

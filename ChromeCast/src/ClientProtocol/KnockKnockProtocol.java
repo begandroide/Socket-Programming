@@ -35,6 +35,7 @@ public class KnockKnockProtocol {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
+    public static final String ANSI_BOLD = "\u001B[1m";
 
 
     //mensaje de bienvenida
@@ -102,8 +103,7 @@ public class KnockKnockProtocol {
         String theOutput = "";
 
         //only first time --> protocol
-        theOutput = "Presione c y ENTER para entrar a modo comandos a ChromeCast\n"
-                    + "Presione q y ENTER para Salir\n";
+        theOutput = "";
         try{
             theOutput += this.getBanner();
         } catch(Exception e){
@@ -116,17 +116,20 @@ public class KnockKnockProtocol {
 
     private String getCommandsAvailable(){
         String outString = "";
-        outString = ANSI_YELLOW + "Comandos disponibles:" + ANSI_RESET + "\n";
-        outString +=  ANSI_PURPLE+"[0]"+ANSI_RESET+" Play  ----> uso: Play_Foyone - Presidente_120\n"
-                    + ANSI_PURPLE+"[1]"+ANSI_RESET+" Stop  ----> uso: Stop\n"
-                    + ANSI_PURPLE+"[2]"+ANSI_RESET+" Pause ----> uso: Pause\n"
-                    + ANSI_PURPLE+"[3]"+ANSI_RESET+" Queue ----> uso: (1) Queue -> consulta la cola\n"
-                    + ANSI_PURPLE+"   "+ANSI_RESET+"                  (2) Queue(<cancion>) -> añade canción a la cola\n"
-                    + ANSI_PURPLE+"[4]"+ANSI_RESET+" Next  ----> uso: Next\n"
-                    + ANSI_PURPLE+"[5]"+ANSI_RESET+" Jump  ----> uso: Jump_<posicion(desde 1: head=0)>\n"
-                    + ANSI_PURPLE+"[6]"+ANSI_RESET+" Commands -> Mostrar historial de comandos\n"
-                    + ANSI_PURPLE+"[7]"+ANSI_RESET+" Help: Mostrar historial de comandos\n"
-                    + ANSI_PURPLE+"[8]"+ANSI_RESET+" Exit...\n";
+        outString = ANSI_YELLOW + ANSI_BOLD + "Comandos disponibles:" + ANSI_RESET + "\n";
+        outString += ANSI_BLUE + ANSI_BOLD + "Información:"+ANSI_RESET+" <canción> = <autor>-<nombre>_<duración>" + ANSI_RESET + "\n";
+        outString +=  ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Play_<canción> : Reproducir ahora\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Stop           : Limpiar cola y detener\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Pause          : Pausar o reanudar reproducción\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Queue          : Consulta la cola\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Queue_<canción>: añade canción a la cola\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Next           : Reproducir próxima canción de la cola\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Jump_<posición(desde 1)>: Saltar a posición en la cola\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Commands       : Mostrar historial de comandos\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Help           : Mostrar esta ayuda \n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Exit...\n";
+        outString += "Presione c+ENTER para entrar a modo comandos a ChromeCast\n"
+                        + "Escriba exit+ENTER para salir\n";
         return outString;
     }
 

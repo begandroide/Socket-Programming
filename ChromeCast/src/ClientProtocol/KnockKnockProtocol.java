@@ -1,6 +1,11 @@
 package ClientProtocol;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -99,7 +104,11 @@ public class KnockKnockProtocol {
         //only first time --> protocol
         theOutput = "Presione c y ENTER para entrar a modo comandos a ChromeCast\n"
                     + "Presione q y ENTER para Salir\n";
-        theOutput += this.banner;
+        try{
+            theOutput += this.getBanner();
+        } catch(Exception e){
+            System.out.println(e);
+        }
         theOutput += this.getCommandsAvailable(); 
 
         return theOutput;
@@ -122,22 +131,20 @@ public class KnockKnockProtocol {
     }
 
 
-    private String banner =
-    "────·────·───·────·────·────·────·────·─────·─────·────·────·────·────·────·\n"+
-    "      _____   __    __   ___ _   ____   ____     ____  ______               \n"+
-    "     /  ___| |  |  |  | |  |/ | /    \\  |   \\   /   | |  ____|             \n"+
-    "    |  |     |  |__|  | |   _/ |  ──  | |    \\_/    | | |___               \n"+
-    "    |  |___  |   __   | |  |   | |  | | |  |\\___/|  | | |____              \n"+
-    "     \\     | |  |  |  | |  |   |  ──  | |  |     |  | |      |              \n"+
-    "      ─────  ────  ────  ──     ──────  ────     ────  ──────               \n"+
-    "               _____   _____   ______     ______________                    \n"+
-    "              /  ___| |  _  | |  _____| |←↓→ ←↓→ ←↓→ ←↓|                    \n"+ 
-    "             |  |     | |_| | \\  \\____   ─── ←↓→ ──────                   \n"+ 
-    "             |  |___  | |─| |  ______//     |←↓→|                           \n"+ 
-    "              \\     | | | | | /      /      |←↓→|                           \n"+ 
-    "               ─────   ─   ─   ──────       ─────      ¢ŧłø                 \n"+
-    "                       By @begandroide                                      \n"+ 
-    "         Herramienta de simulación de un reproductor ChromeCast             \n"+ 
-    "────·────·───·────·────·────·────·────·─────·─────·────·────·────·────·────·\n";
-
+    private String getBanner() throws Exception {
+        String outString = "";
+        File file = new File("resources/banner");
+        
+        BufferedReader br = new BufferedReader( new FileReader(file) ); 
+        
+        String st; 
+        while ((st = br.readLine()) != null) {
+            outString += st + "\n"; 
+        } 
+        
+        br.close();
+        
+        return outString;
+    }
+    
 }

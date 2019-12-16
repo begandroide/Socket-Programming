@@ -14,6 +14,9 @@ public class Server {
         // }
         
         int activeClients = 0;
+        //cola de instrucciones, comunicacion entre Ambos threads.
+        //el Thread ServerCommand envía instrucciones via la cola
+        //bloqueante a el Thread Multicast
         ArrayBlockingQueue<String> bqueue = new ArrayBlockingQueue<String>(7,true); 
         Player player = new Player();
         try 

@@ -11,25 +11,34 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class CommandClientThread extends Thread {
 
     public int clientID = 0;
-    protected DatagramSocket kkSocket = null;
-    protected String hostName = "230.0.0.1";
-    protected int portNumber = 0; /// para escuchar comandos
+    protected int numberCommands = 0; //numero de secuencia
+    
+    /**
+     * Historial de comandos
+     */
     protected List<String> historyCommands = null;
-    protected int numberCommands = 0;
+    
+    protected DatagramSocket kkSocket = null;
+    private DatagramPacket packet = null;
+
+    protected String hostName = "";
+    protected int portNumber = 0; /// puerto cliente para escuchar comandos
+    
     private ArrayBlockingQueue<Boolean> bQueue;
     private Object lock = null;
-    private DatagramPacket packet = null;
+
     private KnockKnockProtocol kkp;
     
-    public CommandClientThread(String port, ArrayBlockingQueue<Boolean> bqueue, Object lock) throws IOException {
+    public CommandClientThread(String hostName,String port, ArrayBlockingQueue<Boolean> bqueue, Object lock) throws IOException {
         super("CommandClientThread");
+        this.hostName = hostName;
         this.portNumber = Integer.parseInt(port);
-        // socket del cliente, conectado al server en el puerto arg
-        kkSocket = new DatagramSocket(this.portNumber);
-        this.historyCommands = new ArrayList<String>();
+        this.kkSocket = new DatagramSocket(this.portNumber);
         this.bQueue = bqueue;
         this.lock = lock;
-        kkp = new KnockKnockProtocol(hostName,packet,kkSocket);
+        // socket del cliente, conectado al server en el puerto arg
+        this.historyCommands = new ArrayList<String>();
+        this.kkp = new KnockKnockProtocol(hostName,packet,kkSocket);
     }
     
     @Override

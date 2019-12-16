@@ -11,18 +11,20 @@ public class MulticastClientThread extends Thread {
     protected InetAddress address = null;
     private ArrayBlockingQueue<Boolean> bQueue;
     private Object lock = null;
+    private String hostName = "";
 
-    public MulticastClientThread(ArrayBlockingQueue<Boolean> bqueue, Object lock) throws IOException {
-        this("MulticastClientThread");
+    public MulticastClientThread(String hostName,ArrayBlockingQueue<Boolean> bqueue, Object lock) throws IOException {
+        this("MulticastClientThread",hostName);
         this.bQueue = bqueue;
         this.lock = lock;
     }
 
-    public MulticastClientThread(String name) throws IOException {
+    public MulticastClientThread(String name,String hostName) throws IOException {
         super(name);
+        this.hostName = hostName;
         try {
             multiSocket = new MulticastSocket(4446);
-            address = InetAddress.getByName("230.0.0.1");
+            address = InetAddress.getByName(this.hostName);
             multiSocket.joinGroup(address);
         } catch (Exception e) {
             System.out.println("Error en constructor del thread");
@@ -35,28 +37,27 @@ public class MulticastClientThread extends Thread {
             byte[] buf = new byte[256];
             packet = new DatagramPacket(buf, buf.length);
             try {
-                //Si el usuario no ha tipeado supercomando para ingresar comandos
+                //Si el usuario no ha tipeado supercomando para ingresar comandos, reproducir
                 if(this.bQueue.isEmpty()){
                     multiSocket.receive(packet);
                     String received = new String(packet.getData(),0,packet.getLength());
                     System.out.print( received + "\033[3C");
                 } else{
+                    //usuario solicitó bloquear escucha a ChromeCast por comandos
                     synchronized(lock){
                         lock.wait();
+                        //esperamos ser notificados para reanudar
                     }
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 try {
                     multiSocket.leaveGroup(address);
                 } catch (IOException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
                 multiSocket.close();
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

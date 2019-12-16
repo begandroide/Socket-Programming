@@ -14,16 +14,23 @@ public class Client {
             System.exit(1);
         }
 
-        //cola bloqueante para entrar a modo comandos y dejar en wait al thread escucha
-        ArrayBlockingQueue<Boolean> bqueue = new ArrayBlockingQueue<Boolean>(1,true);
-        //lock para bloquear/reanudar al thread de escucha multicast, util para 
-        //modo comandos
+        /* blockingQueue -> cola para solicitar bloquear el thread escucha de grupo
+         * multicast por parte de cliente.
+         */
+        ArrayBlockingQueue<Boolean> blockingQueue = new ArrayBlockingQueue<Boolean>(1,true);
+        /**
+         * lock -> objeto sincronizado para bloquear/reanudar el thread de escucha de 
+         * grupo multicast por parte del cliente.
+         */
         Object lock = new Object();
+
         try {
-            new CommandClientThread(args[0],bqueue,lock).start();
-            new MulticastClientThread(bqueue,lock).start();
+            //thread comandos de cliente
+            new CommandClientThread("230.0.0.1",args[0],blockingQueue,lock).start();
+            //thread de escucha a grupo multicast
+            new MulticastClientThread("230.0.0.1",blockingQueue,lock).start();
 		} catch (java.net.BindException e) {
-			System.out.println("Puerto actualmente usado, intenta con otro");
+			System.out.println("Puerto " + args[0] + " actualmente usado, intenta con otro");
         }
     }
 }

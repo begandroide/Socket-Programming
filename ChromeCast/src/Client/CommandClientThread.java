@@ -67,6 +67,8 @@ public class CommandClientThread extends Thread {
                             System.out.print("\r>>Client"+this.clientID+": ");
                         }
                         this.bQueue.clear();
+                        //cliente sale de modo comandos, reactivamos el thread de 
+                        //escucha a grupo multicast
                         synchronized(lock){
                             this.lock.notify();
                         }

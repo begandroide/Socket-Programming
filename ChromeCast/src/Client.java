@@ -14,7 +14,10 @@ public class Client {
             System.exit(1);
         }
 
+        //cola bloqueante para entrar a modo comandos y dejar en wait al thread escucha
         ArrayBlockingQueue<Boolean> bqueue = new ArrayBlockingQueue<Boolean>(1,true);
+        //lock para bloquear/reanudar al thread de escucha multicast, util para 
+        //modo comandos
         Object lock = new Object();
         try {
             new CommandClientThread(args[0],bqueue,lock).start();

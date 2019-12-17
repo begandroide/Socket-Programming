@@ -68,7 +68,7 @@ public class Player {
     public Boolean next() {
         Boolean flag = false;
 
-        if (reproductionQueue.size() > 0) {
+        if (reproductionQueue.size() > 0 && this.progress > 0) {
             this.removeFirstElement();
             this.resetProgresses();
             flag = true;

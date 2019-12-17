@@ -64,8 +64,11 @@ public class KnockKnockProtocol {
         
         packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
         if( isOnlySend(toLow) ){
-
-            kkSocket.send(packet);
+            if(isBadFormated(toLow)){
+                System.out.println("Comando mal formateado");                
+            } else{
+                kkSocket.send(packet);
+            }
         } else if(toLow.compareTo("queue") == 0 ){
 
             kkSocket.send(packet);
@@ -93,6 +96,24 @@ public class KnockKnockProtocol {
         } else if(word.contains("play") || word.contains("stop") || word.contains("queue_")){
             flag = true;
         } 
+
+        return flag;
+    }
+
+    private Boolean isBadFormated(String word){
+        String playRegex = "play_[\\w ]+-\\w+_\\d+$";
+        String jumpRegex = "jump_\\d+$";
+        String queueRegex = "queue_[\\w ]+-\\w+_\\d+$";
+        Boolean flag = true; 
+
+        if(word.contains("play") && word.matches(playRegex)){
+            flag = false;
+        } else if(word.contains("jump") && word.matches(jumpRegex)){
+            flag = false;
+        }else if(word.contains("queue_") && word.matches(queueRegex)){ 
+            flag = false;
+        }
+        if(word.contains("pause") || word.contains("next") || word.contains("stop") ) flag = false;
 
         return flag;
     }

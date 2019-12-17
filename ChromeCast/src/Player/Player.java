@@ -77,7 +77,7 @@ public class Player {
     }
 
     public void jump(int position){
-        if(reproductionQueue.size()>=position){
+        if( (position > 1 ) && reproductionQueue.size()>=position){
             for(int i = 0; i < position; i++){
                 this.removeFirstElement();
             }

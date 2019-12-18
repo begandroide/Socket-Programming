@@ -87,6 +87,7 @@ public class Player {
 
     public void clearReproductionQueue(){
         reproductionQueue.clear();
+        resetProgresses();
     }
 
     public byte[] reproductionQueueToString(){

@@ -110,6 +110,10 @@ public class KnockKnockProtocol {
             flag = false;
         } else if(word.contains("jump") && word.matches(jumpRegex)){
             flag = false;
+            if(Integer.valueOf(word.split("_")[1]) <2){
+                System.out.println("Comando jump funciona desde la posición 2");
+                flag = true;
+            }
         }else if(word.contains("queue_") && word.matches(queueRegex)){ 
             flag = false;
         }
@@ -143,8 +147,8 @@ public class KnockKnockProtocol {
                     + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Queue          : Consulta la cola\n"
                     + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Queue_<canción>: añade canción a la cola\n"
                     + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Next           : Reproducir próxima canción de la cola\n"
-                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Jump_<posición(desde 1)>: Saltar a posición en la cola\n"
-                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Commands       : Mostrar historial de comandos\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Jump_<posición(desde 2)>: Saltar a posición en la cola\n"
+                    + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" History       : Mostrar historial de comandos\n"
                     + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Help           : Mostrar esta ayuda \n"
                     + ANSI_BOLD + ANSI_PURPLE+"[-]"+ANSI_RESET+" Exit...\n";
         outString += "Presione c+ENTER para entrar a modo comandos a ChromeCast\n"
@@ -152,7 +156,11 @@ public class KnockKnockProtocol {
         return outString;
     }
 
-
+    /**
+     * A quien no le gusta un banner?
+     * @return
+     * @throws Exception
+     */
     private String getBanner() throws Exception {
         String outString = "";
         File file = new File("resources/banner");

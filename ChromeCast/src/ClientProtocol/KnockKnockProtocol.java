@@ -89,6 +89,12 @@ public class KnockKnockProtocol {
         }
     }
 
+    /**
+     * verifica si el comando es solo de envío
+     * ejemplo: comando queue necesita recepción dedicada del cliente
+     * @param word
+     * @return
+     */
     private Boolean isOnlySend(String word){
         Boolean flag = false;
         if(word.contains("pause") || word.contains("next") || word.contains("jump")){
@@ -100,6 +106,11 @@ public class KnockKnockProtocol {
         return flag;
     }
 
+    /**
+     * verifica si el comando esta mal formateado o no
+     * @param word string a verificar formato
+     * @return si está mal formateada : true
+     */
     private Boolean isBadFormated(String word){
         String playRegex = "play_[\\w ]+-\\w+_\\d+$";
         String jumpRegex = "jump_\\d+$";
@@ -137,6 +148,10 @@ public class KnockKnockProtocol {
         return theOutput;
     }
 
+    /**
+     * Ayuda de comandos y como usarlos
+     * @return
+     */
     private String getCommandsAvailable(){
         String outString = "";
         outString = ANSI_YELLOW + ANSI_BOLD + "Comandos disponibles:" + ANSI_RESET + "\n";

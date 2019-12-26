@@ -39,7 +39,7 @@ public class MulticastServerThread extends Thread {
             try {
                 if( instructionQueue.size() > 0 )
                 {
-                    lastCommand = instructionQueue.take(); 
+                    lastCommand = instructionQueue.take();
                     processMessage(lastCommand);
                 }
                 byte[] buf = new byte[256];
@@ -112,21 +112,22 @@ public class MulticastServerThread extends Thread {
     protected void processMessage(String inMString) throws NumberFormatException, InterruptedException {
         //Queue_<cancion>-<autor>_<segundos>
         //Play_<cancion>-<autor>_<segundos>
-        String[] inListString = inMString.split("_");
+        String[] instructions = inMString.split(";");
+        String[] inListString = instructions[0].split("_");
         String[] themeAuthor;
         switch (inListString[0]) {
             case "play":
             case "Play":
                 //tomar canción y reproducir ¿sin importar orden? que pasa con la cola?
                 themeAuthor = inListString[1].split("-");
-                player.putInHead(new Song(themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2]),1));
+                player.putInHead(new Song(themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2]),Integer.valueOf(instructions[1])));
                 state = ServerStatus.PLAY;
                 player.setMaxProgress(Integer.valueOf(inListString[2]));
                 break;
             case "queue":
             case "Queue":
                 themeAuthor = inListString[1].split("-");
-                player.putInTail(new Song(themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2]),2));
+                player.putInTail(new Song(themeAuthor[0],themeAuthor[1],Integer.valueOf(inListString[2]),Integer.valueOf(instructions[1])));
                 if(player.getSizeReproductionQueue() == 1){
                     state = ServerStatus.PLAY;
                     player.resetProgresses();

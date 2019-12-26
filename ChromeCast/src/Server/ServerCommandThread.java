@@ -64,20 +64,21 @@ public class ServerCommandThread extends Thread {
     private void decodeReceived(String received, DatagramPacket packet, MulticastSocket multiSocket) throws IOException{ 
         //HelloChromeCast
         String outBrute = extractBruteCommand(received);
-        if(outBrute.compareTo("hellochromecast") == 0){
+        String tmpBrute = outBrute.split(";")[0];
+        if(tmpBrute.compareTo("hellochromecast") == 0){
             System.out.println("Nuevo cliente");
             activeClients++;
             byte[] activeNow = String.valueOf( activeClients ).getBytes();
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
             multiSocket.send(packet); 
-        } else if( outBrute.compareTo("queue") == 0 ){
+        } else if( tmpBrute.compareTo("queue") == 0 ){
             System.out.println("Consulta cola");
             byte[] activeNow = player.reproductionQueueToString();
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
             multiSocket.send(packet); 
-        } else if(outBrute.compareTo("byebyechromecast") == 0){
+        } else if(tmpBrute.compareTo("byebyechromecast") == 0){
             activeClients--;
-        } else if(outBrute.compareTo("history") == 0 ){
+        } else if(tmpBrute.compareTo("history") == 0 ){
             System.out.println("Consulta historial");
             byte[] activeNow = this.historyCommands.toString().getBytes();
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
@@ -97,6 +98,7 @@ public class ServerCommandThread extends Thread {
         Matcher matcher = pattern.matcher(fromUser);
         if (matcher.matches()) {
             brute = matcher.group(3);
+            brute += ";" + matcher.group(1);
             System.out.println("brute command " + brute);
         } else if(fromUser.compareTo("HelloChromeCast") == 0 || fromUser.compareTo("ByeByeChromeCast") == 0){
             brute = fromUser;

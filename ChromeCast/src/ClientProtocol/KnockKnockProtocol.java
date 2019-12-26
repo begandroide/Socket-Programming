@@ -8,6 +8,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class KnockKnockProtocol {
 
@@ -56,9 +58,25 @@ public class KnockKnockProtocol {
         return clientID;
     }
     
+    public String extractBruteCommand(String fromUser){
+        String brute = "";
+        String regex = "Client([0-9])+(->){1}'([\\w|\\s|_|-]+)'(\\s-\\s)ID:([0-9])+$";
+        fromUser.matches(regex);
+        
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(fromUser);
+        if (matcher.matches()) {
+            brute = matcher.group(3);
+            System.out.println("brute command " + brute);
+        }
+
+        return brute.toLowerCase();
+    }
 
     public void processInput(String fromUser, byte[] messageByte) throws IOException {
-        String toLow = fromUser.toLowerCase();
+        //extraer comando bruto
+
+        String toLow = extractBruteCommand( fromUser );
 
         messageByte =  fromUser.getBytes();
         
@@ -69,7 +87,7 @@ public class KnockKnockProtocol {
             } else{
                 kkSocket.send(packet);
             }
-        } else if(toLow.compareTo("queue") == 0 ){
+        } else if(toLow.compareTo("queue") == 0 || toLow.compareTo("history") == 0){
 
             kkSocket.send(packet);
             

@@ -2,13 +2,13 @@ package Player;
 
 
 public class Song {
-    public int id;
+    public int clientId;
     public String nameSong;
     public String author;
     public int seconds;
 
-    public Song(int id, String nameSong, String author, int seconds){
-        this.id = id;
+    public Song(String nameSong, String author, int seconds, int clientId){
+        this.clientId = clientId;
         this.nameSong = nameSong;
         this.author = author;
         this.seconds = seconds;
@@ -16,6 +16,6 @@ public class Song {
 
     @Override
     public String toString(){
-        return "{id:"+id+","+nameSong+"-"+author+"-"+seconds+"[s]}";
+        return "{Client:"+clientId+","+nameSong+"-"+author+"-"+seconds+"[s]}";
     }
 }

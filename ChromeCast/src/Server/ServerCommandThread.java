@@ -3,8 +3,12 @@ package Server;
 import Player.Player;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 
@@ -15,12 +19,17 @@ public class ServerCommandThread extends Thread {
     private ArrayBlockingQueue<String> bQueue;
     private Player player;
     private int activeClients = 0;
+    /**
+     * Historial de comandos
+     */
+    protected List<String> historyCommands = null;
 
     public ServerCommandThread( ArrayBlockingQueue<String> bqueue, int activeClients, Player player) throws IOException {
         super("ServerCommandThread");
         this.bQueue = bqueue;
         this.activeClients = activeClients;
         this.player = player;
+        this.historyCommands = new ArrayList<String>();
     }
 
     @Override
@@ -44,8 +53,6 @@ public class ServerCommandThread extends Thread {
                 decodeReceived(received, packet, multiSocket);
                 
                 System.out.println(received);
-                String cmp = received.toLowerCase();
-                if( (!cmp.contains("hello") && !(cmp.compareTo("queue") == 0) && !(cmp.contains("byebye")) )) bQueue.add(received);
             }
 
         } catch (IOException e) {
@@ -56,22 +63,45 @@ public class ServerCommandThread extends Thread {
 
     private void decodeReceived(String received, DatagramPacket packet, MulticastSocket multiSocket) throws IOException{ 
         //HelloChromeCast
-        
-        if(received.compareTo("HelloChromeCast") == 0){
+        String outBrute = extractBruteCommand(received);
+        if(outBrute.compareTo("hellochromecast") == 0){
             System.out.println("Nuevo cliente");
             activeClients++;
             byte[] activeNow = String.valueOf( activeClients ).getBytes();
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
             multiSocket.send(packet); 
-        }
-        if( (received.compareTo("Queue") == 0) || (received.compareTo("queue") == 0) ){
+        } else if( outBrute.compareTo("queue") == 0 ){
             System.out.println("Consulta cola");
             byte[] activeNow = player.reproductionQueueToString();
             packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
             multiSocket.send(packet); 
-        }
-        if(received.compareTo("ByeByeChromeCast") == 0){
+        } else if(outBrute.compareTo("byebyechromecast") == 0){
             activeClients--;
+        } else if(outBrute.compareTo("history") == 0 ){
+            System.out.println("Consulta historial");
+            byte[] activeNow = this.historyCommands.toString().getBytes();
+            packet = new DatagramPacket(activeNow, activeNow.length,packet.getAddress(),packet.getPort());
+            multiSocket.send(packet);
+        } else {
+            this.historyCommands.add(received);
+            bQueue.add(outBrute);
         }
+    }
+
+    public String extractBruteCommand(String fromUser){
+        String brute = "";
+        String regex = "Client([0-9])+(->){1}'([\\w|\\s|_|-]+)'(\\s-\\s)ID:([0-9])+$";
+        fromUser.matches(regex);
+        
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(fromUser);
+        if (matcher.matches()) {
+            brute = matcher.group(3);
+            System.out.println("brute command " + brute);
+        } else if(fromUser.compareTo("HelloChromeCast") == 0 || fromUser.compareTo("ByeByeChromeCast") == 0){
+            brute = fromUser;
+        }
+
+        return brute.toLowerCase();
     }
 }

@@ -13,11 +13,6 @@ public class CommandClientThread extends Thread {
     public int clientID = 0;
     protected int numberCommands = 0; //numero de secuencia
     
-    /**
-     * Historial de comandos
-     */
-    protected List<String> historyCommands = null;
-    
     protected DatagramSocket kkSocket = null;
     private DatagramPacket packet = null;
 
@@ -37,7 +32,6 @@ public class CommandClientThread extends Thread {
         this.bQueue = bqueue;
         this.lock = lock;
         // socket del cliente, conectado al server en el puerto arg
-        this.historyCommands = new ArrayList<String>();
         this.kkp = new KnockKnockProtocol(hostName,packet,kkSocket);
     }
     
@@ -62,16 +56,9 @@ public class CommandClientThread extends Thread {
                         welcomeCommandMode();
                         while( (fromUser = stdIn.readLine()).compareTo("exit") != 0 ){
                             //tratamiento de user input
-                            registerCommand(fromUser);
-                            String toLow = fromUser.toLowerCase();
+                            String clientString = registerCommand(fromUser);
         
-                            if(toLow.compareTo("history") == 0){
-                                for (String b : historyCommands) {
-                                    System.out.println(b);
-                                }
-                            } else{
-                                kkp.processInput(fromUser, messageByte);
-                            }
+                            kkp.processInput(clientString, messageByte);
                         
                             System.out.print("\r>>Client"+this.clientID+": ");
                         }
@@ -98,10 +85,10 @@ public class CommandClientThread extends Thread {
         }
     }
 
-    private void registerCommand(String fromUser){
+    private String registerCommand(String fromUser){
         String command = "Client"+ String.valueOf( this.clientID )+"->'" + fromUser +"' - ID:"+numberCommands;
         increaseCommandNumber();
-        this.historyCommands.add(command);
+        return command;
     }
 
     private void welcomeCommandMode() throws InterruptedException {

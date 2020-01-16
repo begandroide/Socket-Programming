@@ -25,7 +25,7 @@ public class MulticastServerThread extends Thread {
     public MulticastServerThread(String ipMulticast, ArrayBlockingQueue<String> instructionQueue, Player player) throws IOException{
         super("MulticastServerThread");
         this.ipMulticast = ipMulticast;
-        socket = new DatagramSocket(4445);
+        socket = new DatagramSocket(5005);
         state =  ServerStatus.STOP;
         previousState=  ServerStatus.STOP;
         this.player = player;
@@ -54,7 +54,7 @@ public class MulticastServerThread extends Thread {
                 // se debe saber dirección del cliente y puerto desde donde llegó la request
                 InetAddress groupAddress = InetAddress.getByName(ipMulticast);
                 
-                DatagramPacket packet = new DatagramPacket(buf, buf.length,groupAddress,4446);
+                DatagramPacket packet = new DatagramPacket(buf, buf.length,groupAddress,5006);
                 socket.send(packet); 
                 try {
                     sleep(ONE_SECONDS);

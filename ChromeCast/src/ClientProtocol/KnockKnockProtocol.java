@@ -43,7 +43,7 @@ public class KnockKnockProtocol {
         
         messageByte =  "HelloChromeCast".getBytes();
         
-        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,5007);
         kkSocket.send(packet); 
         
         //esperar id de cliente de servidor
@@ -80,7 +80,7 @@ public class KnockKnockProtocol {
 
         messageByte =  fromUser.getBytes();
         
-        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+        packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,5007);
         if( isOnlySend(toLow) ){
             if(isBadFormated(toLow)){
                 System.out.println("Comando mal formateado");                
@@ -93,7 +93,7 @@ public class KnockKnockProtocol {
             
             messageByte = new byte[1000];
             
-            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,4447);
+            packet = new DatagramPacket(messageByte, messageByte.length,groupAddress,5007);
             
             kkSocket.receive(packet);
     

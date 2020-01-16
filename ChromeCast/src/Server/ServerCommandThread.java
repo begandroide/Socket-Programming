@@ -36,7 +36,7 @@ public class ServerCommandThread extends Thread {
     public void run() {
         InetAddress address;
         try(
-            MulticastSocket multiSocket = new MulticastSocket(4447);
+            MulticastSocket multiSocket = new MulticastSocket(5007);
             ) 
             {
             address = InetAddress.getByName("230.0.0.1");

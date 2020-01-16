@@ -23,7 +23,7 @@ public class MulticastClientThread extends Thread {
         super(name);
         this.hostName = hostName;
         try {
-            multiSocket = new MulticastSocket(4446);
+            multiSocket = new MulticastSocket(5006);
             address = InetAddress.getByName(this.hostName);
             multiSocket.joinGroup(address);
         } catch (Exception e) {

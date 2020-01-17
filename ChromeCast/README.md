@@ -2,6 +2,16 @@
 
 Proyecto de Sistemas distribuidos, Chromecast con grupos multicast/broadcast.
 
+## Integrantes
+
+**Grupo Nº4**  
+Benjamín Gautier Ortiz - 20146003604  
+Juan Caniguante - 201673100-8
+
+## Aclaración
+
+La tarea funciona correctamente en las máquinas virtuales designadas.
+
 ## Estructura
 
 ```bash
@@ -41,7 +51,7 @@ user@group:~\ChromeCast\bin> java Client <port_number>
 
 Chromecast es un servidor multicast de contenido multimedia que envía cada 1 segundo el estado actual del mismo. Ofrece reproductor multimedia on-demand de sus clientes. Si un cliente pide una canción o que se detenga la reproducción, todos los clientes obtendrán el mismo resultado, ya que es multicast.
 
-## Consideraciones
+## Consideraciones (importantes)
 
 Cuando un cliente desea ingresar un comando, entonces el thread que se encuentra escuchando el ChromeCast se detiene para permitir ingresar el input del usuario. Se decidió lo anterior debido a que el ChromeCast envía un mensaje cada 1 segundo, el cual es impreso por la salida estandar de consola, limpiando la línea en donde potencialmente el usuario debe ingresar el comando. Por lo que declaramos dos modos:
 
@@ -62,6 +72,7 @@ El servidor ofrece los siguientes comandos:
 - Queue_\<cancion>-\<autor>_\<segundos>
 - Next
 - Jump_\<queue_cancion_id>
+- Help
 
 ### Estados
 

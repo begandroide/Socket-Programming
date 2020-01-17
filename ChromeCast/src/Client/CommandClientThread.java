@@ -52,7 +52,7 @@ public class CommandClientThread extends Thread {
                 if (fromUser != null) {
                     if(fromUser.compareTo("c") == 0){
                         welcomeCommandMode();
-                        while( (fromUser = stdIn.readLine()).compareTo("exit") != 0 ){
+                        while( (fromUser = stdIn.readLine()).toLowerCase().compareTo("exit") != 0 ){
                             //tratamiento de user input
                             String clientString = registerCommand(fromUser);
         
@@ -66,7 +66,7 @@ public class CommandClientThread extends Thread {
                         synchronized(lock){
                             this.lock.notify();
                         }
-                    } else if(fromUser.compareTo("exit") == 0){
+                    } else if(fromUser.compareTo("exit") == 0 || fromUser.compareTo("Exit") == 0  ){
                         System.out.println("a despedirse");
                         System.exit(1);
                     }

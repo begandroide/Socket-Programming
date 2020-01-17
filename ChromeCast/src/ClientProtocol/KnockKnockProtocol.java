@@ -67,7 +67,7 @@ public class KnockKnockProtocol {
         Matcher matcher = pattern.matcher(fromUser);
         if (matcher.matches()) {
             brute = matcher.group(3);
-            System.out.println("brute command " + brute);
+        //     System.out.println("brute command " + brute);
         }
 
         return brute.toLowerCase();

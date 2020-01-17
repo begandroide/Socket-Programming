@@ -28,24 +28,24 @@ JAVAC_COMPILE = $(JC) $(J_DIRECTORY_SOURCE) $(J_DIRECTORY_CLASS)
 # Default Java compilation
 #-----------------------------------------------------------------------
 
-default : bin $(OBJ)
+default : bin $(OBJ) cpy
 
-# Creation des .class dans le dossier bin.
+# Creación de .class en carpeta bin.
 %.class: %.java
 		@$(JAVAC_COMPILE) $*.java
 
-# Creation du dossier bin
+# Creación directorio bin
+cpy : 
+	@cp -r ./src/resources ./bin/
+
+# Creación directorio bin
 bin : 
 	@mkdir -p ./bin/
 
-# Clean up but keep executables
+# Limpiar
 clean :
 	rm -Rfv bin/*
-	rm ./*.class
 
-# Détruit également le dossier bin
+# Limpiar incluso bin
 fullclean : clean
 	rmdir ./bin
-
-runserver:
-	java 

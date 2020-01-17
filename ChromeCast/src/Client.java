@@ -9,8 +9,8 @@ public class Client {
     public static void main(String[] args) throws IOException {
 
         //230.0.0.1
-        if(args.length < 1){
-            System.out.println("Uso: java client <ip_host> <port>");
+        if(args.length < 2){
+            System.out.println("Uso: java client <ip_multicast> <port>");
             System.exit(1);
         }
 
@@ -26,11 +26,11 @@ public class Client {
 
         try {
             //thread comandos de cliente
-            new CommandClientThread("230.0.0.1",args[0],blockingQueue,lock).start();
+            new CommandClientThread(args[0],args[1],blockingQueue,lock).start();
             //thread de escucha a grupo multicast
-            new MulticastClientThread("230.0.0.1",blockingQueue,lock).start();
+            new MulticastClientThread(args[0],blockingQueue,lock).start();
 		} catch (java.net.BindException e) {
-			System.out.println("Puerto " + args[0] + " actualmente usado, intenta con otro");
+			System.out.println("Puerto " + args[1] + " actualmente usado, intenta con otro");
         }
     }
 }

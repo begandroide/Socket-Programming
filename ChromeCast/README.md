@@ -37,14 +37,16 @@ Lo anterior dejará en el directorio *./bin* las clases compiladas.
 
 ```bash
 user@group:~\ChromeCast> cd bin 
-user@group:~\ChromeCast\bin> java Server 
+user@group:~\ChromeCast\bin> java Server <ip_multicast>
+ejemplo: java Server 230.0.0.1
 ```
 
 ## Uso cliente
 
 ```bash
 user@group:~\ChromeCast> cd bin 
-user@group:~\ChromeCast\bin> java Client <port_number>
+user@group:~\ChromeCast\bin> java Client <ip_multicast> <port_number>
+ejemplo: java Client 230.0.0.1 5030
 ```
 
 ## Funcionalidad

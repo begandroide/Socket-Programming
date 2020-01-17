@@ -8,10 +8,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class Server {
     public static void main(String[] args) throws IOException {
         
-        // if(args.length < 1){
-        //     System.out.println("Uso: java server <ip_multicast>");
-        //     System.exit(1);
-        // }
+        if(args.length < 1){
+            System.out.println("Uso: java server <ip_multicast>");
+            System.exit(1);
+        }
         
         int activeClients = 0;
         //cola de instrucciones, comunicacion entre Ambos threads.
@@ -21,7 +21,7 @@ public class Server {
         Player player = new Player();
         try 
         {
-            new MulticastServerThread("230.0.0.1",bqueue,player).start(); 
+            new MulticastServerThread(args[0],bqueue,player).start(); 
             new ServerCommandThread(bqueue,activeClients,player).start();
 
         } catch (IOException e) {
